@@ -1,0 +1,308 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 *ngIf="editingid!=0" class="panel-title pull-right"> <a
+                                        [routerLinkActive]="['active']" [routerLink]="['../../videoList']" class="">
+                                        << Back to videos list </a>
+                                </h3>
+                                <h3 class="panel-title">
+                                    <span *ngIf="editingid==0">Add new video</span><span *ngIf="editingid!=0">Edit
+                                        Video</span>
+                                    [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="videodata">
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Write Title"
+                                    [(ngModel)]="videodata.title"><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Select Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.sub_course_id"
+                                    (change)="getTopicByIdOfCourse()">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.topic_id">
+                                    <option value="">Select Topic </option>
+                                    <option *ngFor="let obj of topiclist;" value="{{obj._id}}">
+                                        {{obj.topic_name}}</option>
+
+                                </select><br>
+                            </div>
+
+
+                            <div class="col-md-6  ">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.active_status">
+                                    <option value="">Select Video Status</option>
+                                    <option value="Publish">Publish</option>
+                                    <option value="Un-Publish">Un-Publish</option>
+
+                                </select><br>
+                            </div>
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+
+
+
+                                <angular-editor id="editorMain" [placeholder]="'Write Details...'"
+                                    [(ngModel)]="videodata.details"></angular-editor>
+                                <br> <br> <br>
+                                <br>
+                            </div>
+                            <br>
+
+                            <!-- ////////////////file Image //////////////// -->
+                            <div class="col-md-12">
+                               
+                                <div class="col-md-3"> Upoad thumbnail File (png,jpeg) (107 X 107 is required)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img">
+
+
+                                        <input type="file" id="fileUpload_img" name="profile_img"
+                                            (change)="onSelectedFile_img($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img.status">
+
+
+                                    <span *ngIf="fileUpload_img.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Direct path of image"
+                                    [(ngModel)]="imagepath"><br>
+                            </div>
+                            <!-- ////////////////file image end//////////////// -->
+
+                            <!-- ////////////////file supporting //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad Supporting File  </div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_support">
+
+
+                                        <input type="file" id="fileUpload_support" name="profile_support"
+                                            (change)="onSelectedFile_support($event)" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_support">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_support.status">
+
+
+                                    <span *ngIf="fileUpload_support.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_support.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg"
+                                    placeholder="Direct path of support doc" [(ngModel)]="supportpath"><br>
+                            </div>
+                            <!-- ////////////////file supporting end//////////////// -->
+
+
+
+
+                            <!-- ////////////////file //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad video File (mp4)</div>
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm">
+
+
+                                        <input type="file" id="fileUpload" name="profile"
+                                            (change)="onSelectedFile($event)" accept="video/*" />
+
+                                        <video #video style="display: none;" *ngIf="videoUrl" width="320" height="240"
+                                            controls [attr.src]="videoUrl" (loadedmetadata)="getDuration($event)">
+                                        </video>
+                                    </form>
+                                    
+                                </div>
+                                <br />
+                                <small *ngIf="fileuploadAction">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload.status">
+
+
+                                    <span *ngIf="fileUpload.status==='progress'">
+
+
+
+                                        <div>{{fileUpload.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Direct path of video"
+                                    [(ngModel)]="videopath"><br><input type="text" class="form-control input-lg" placeholder="Write Title"
+                                    [(ngModel)]="videoduration"><br>
+                            </div>
+                            <!-- ////////////////file end//////////////// -->
+                            <!-- ////////////////file pdf //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad PDF File </div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_pdf">
+
+
+                                        <input type="file" id="fileUpload_pdf" name="profile_pdf"
+                                            (change)="onSelectedFile_pdf($event)" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_pdf">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_pdf.status">
+
+
+                                    <span *ngIf="fileUpload_pdf.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_pdf.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Direct path of PDF"
+                                    [(ngModel)]="pdfpath"><br>
+                            </div>
+                            <!-- ////////////////file pdf end//////////////// -->
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction || fileaction" (click)="resetvideodata()"> Reset</button>&nbsp;
+
+                            <button type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="saveaction || fileaction" (click)="saveVideo()" style="margin: 10px;"><span
+                                    *ngIf="!saveaction"><span *ngIf="editingid==0">Save</span><span
+                                        *ngIf="editingid!=0">Edit</span>
+                                    Video</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!videodata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

@@ -1,0 +1,164 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="topicdata">
+
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Search by topic"
+                                    [(ngModel)]="topicdata.topic_name"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="topicdata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+
+
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="topicdata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+
+
+
+
+
+
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resettopicdata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="searchaction" (click)="searchTopic('startagain')"
+                                style="margin: 10px;"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="topicdataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Topic List (Total
+                                {{totalRecord}} Topics)
+
+                                <i class="fa fa-refresh " (click)="searchTopic('startagain')"></i>
+
+                            </h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="topicdataList && topicdataList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Topic name</th>
+
+                                        <th>Course</th>
+
+
+                                        <th>Added On</th>
+
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of topicdataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>{{obj.topic_name}} <small *ngIf="obj.created_by_name=='TEACHER'">(By
+                                                teacher)</small> </td>
+
+                                        <td> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                            ({{getCourse_name(obj.course_id,'MAIN')}})</td>
+
+                                        <td>{{obj.adding_date | date:"medium"}}</td>
+
+
+                                        <td style="cursor: pointer;"> <span class="lnr lnr-pencil"
+                                                [routerLink]="['../addtopic',obj._id]"></span>&nbsp;<span
+                                                class="lnr lnr-trash" (click)="deleteTopic(obj,i)"></span>
+                                            <!-- <span (click)="updateQ_in_for_query(obj)">Update Qid </span>
+                                            {{obj.question_id_join_query}} -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && topicdataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="topicdataList &&  topicdataList.length==0">
+                                No Topic Found
+                            </h4>
+                            <h4 align="center" *ngIf="!topicdataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

@@ -1,0 +1,311 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="lecturedata">
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Title"
+                                    [(ngModel)]="lecturedata.title"><br>
+                            </div>
+
+
+
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="lecturedata.created_by">
+                                    <option value="">Select Teacher</option>
+
+                                    <option *ngFor="let tob of teacherdataList ;let  i=index"
+                                        value="{{tob.table_id_for_query}}">{{tob.first_name}} {{tob.last_name}}
+                                    </option>
+
+                                </select><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="lecturedata.created_by">
+                                    <option value="">Select Topic</option>
+
+                                    <option *ngFor="let tob of topiclist ;let  i=index" value="{{tob._id}}">
+                                        {{tob.topic_name}}
+                                    </option>
+
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>From Course Adding Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="lecturedata.from_reg_date"
+                                    placeholder="Search by From adding date"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>To Course Adding Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="lecturedata.to_reg_date"
+                                    placeholder="Search by To adding date"><br>
+                            </div>
+                            <br>
+
+
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetlecturedatajust()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" style="margin: 10px;"
+                                class="btn btn-primary pull-right input-lg" [disabled]="searchaction"
+                                (click)="searchLecture('startagain')"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="lecturedataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform;getTopicList()">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">
+
+                                Lecture List <span *ngIf="lecturestatus=='pendingforapproval'">
+                                    Which Are Pending For Approval
+                                </span>
+                                <span *ngIf="lecturestatus=='approved'">
+                                    Which Are Approved
+                                </span>
+
+
+                                <span *ngIf="lecturestatus=='rejected'">
+                                    Which Are Rejected
+                                </span>
+
+
+                                (Total
+                                {{totalRecord}} lectures)
+
+                                <i class="fa fa-refresh " (click)="searchLecture('startagain')"></i>
+                            </h3>
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="lecturedataList && lecturedataList.length>0 ">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Lecture Details</th>
+                                        <th>Thumbnail </th>
+
+                                        <th>Course</th>
+
+                                        <th>Topic</th>
+                                        <th>Status</th>
+
+                                        <th>Files</th>
+
+
+
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of lecturedataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>
+
+                                            <b>Title :</b> {{obj.title}}<br />
+                                            <b>Teacher :</b> {{getTeachername(obj.created_by)}}<br />
+                                            <b> Added On :</b> {{obj.adding_date | date:"medium"}}<br />
+                                            <span style="cursor: pointer;color: blue;" (click)="openModal(obj,myModal)">
+                                                Click for more details
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{obj.serverpath+obj.imagepath}}" target="_blank">
+                                                <img style="height: 107;width:107px"
+                                                    src="{{obj.serverpath+obj.imagepath}}">
+                                            </a>
+
+
+
+                                        </td>
+
+
+
+                                        <td> {{getTeacherCourse_name(obj.sub_course_id) }}
+                                            <small>({{CommonServiceService.getCoursenameAccordingToLevel_bysub_course_id_teacher(obj.sub_course_id,coursedataList)}})</small>
+                                            <br /> ({{getCourseStatus(obj)}})
+                                            
+                                            <span *ngIf="!checkifpublishednot(obj)"> <br />(Published)</span>
+                                        </td>
+
+                                        <td>{{obj.topic_name}}</td>
+
+                                        <td>
+
+
+
+                                            <span *ngIf="obj.video_review_status=='PENDING'" style="color: grey;">Under
+                                                Review
+                                                <br />
+                                                <span *ngIf="!checkifcourseApproved(obj)">
+                                                    Course is not approved
+                                                </span>
+                                                <button type="button" *ngIf="checkifcourseApproved(obj)"
+                                                    class="btn btn-success  input-sm" (click)="approvelecture(obj)">
+                                                    Approve</button>&nbsp;
+
+                                                <button type="button" *ngIf="checkifcourseApproved(obj)"
+                                                    class="btn btn-danger   input-sm" (click)="rejectlecture(obj)">
+                                                    Reject</button>&nbsp;
+
+                                            </span>
+                                            <span *ngIf="obj.video_review_status=='APPROVED'"
+                                                style="color: green;">Approved
+                                                <br />
+                                                <button *ngIf="checkifpublishednot(obj)" type="button"
+                                                    class="btn btn-danger   input-sm" (click)="rejectlecture(obj)">
+                                                    Reject</button>&nbsp;
+                                                <button *ngIf="checkifpublishednot(obj)" type="button"
+                                                    class="btn btn-primary   input-sm" (click)="pendinglecture(obj)">
+                                                    Pending</button>&nbsp;
+
+
+                                            </span>
+                                            <span *ngIf="obj.video_review_status=='REJECTED'"
+                                                style="color: red;">Rejected
+                                                <br />
+                                                <small *ngIf="obj.rejection_reason!=''">
+                                                    (Reason - {{obj.rejection_reason}})
+                                                </small>
+
+
+                                                <br />
+                                                <button type="button" class="btn btn-success  input-sm"
+                                                    (click)="approvelecture(obj)"> Approve</button>&nbsp;
+                                                <button type="button" class="btn btn-primary   input-sm"
+                                                    (click)="pendinglecture(obj)"> Pending</button>&nbsp;
+                                            </span>
+
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                            <span *ngIf="obj.videopath">
+                                                <a href="{{obj.serverpath+obj.videopath}}"
+                                                    target="_blank">Video</a>&nbsp;||&nbsp;
+                                            </span>
+                                            <span *ngIf="obj.pdfpath">
+                                                <a href="{{obj.serverpath+obj.pdfpath}}"
+                                                    target="_blank">PDF</a>&nbsp;||&nbsp;
+                                            </span>
+                                            <span *ngIf="obj.supportpath">
+                                                <a href="{{obj.serverpath+obj.supportpath}}" target="_blank">Supporting
+                                                    Doc</a>&nbsp;||&nbsp;
+                                            </span>
+
+                                            <a href="{{obj.serverpath+obj.imagepath}}" target="_blank">Image</a>
+
+                                        </td>
+
+
+
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && lecturedataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="lecturedataList &&  lecturedataList.length==0">
+                                No Course Found
+                            </h4>
+                            <h4 align="center" *ngIf="!lecturedataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3>{{modalObjData.title}} </h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;max-height:400px;overflow-y: scroll;">
+
+                <div class="col-md-12" [innerHTML]="modalObjData.details">
+
+                </div>
+
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

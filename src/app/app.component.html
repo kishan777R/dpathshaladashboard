@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<app-header></app-header>
+
+<body [ngClass]="HeaderdataService.sidemenu === true ? '' : HeaderdataService.bodynavopenclass" >
+  <!-- WRAPPER -->
+  <div id="wrapper" *ngIf="CommonServiceService.isLoginedF()">
+    <app-navbar></app-navbar>
+    <app-sidebar></app-sidebar>
+    <router-outlet></router-outlet>
+
+    <app-footer></app-footer>
+  </div>
+  <div id="wrapper" *ngIf="!CommonServiceService.isLoginedF()">
+    <app-login></app-login>
+  </div>
+  <div class="snackbar" id="snackbar1"   >{{HeaderdataService.tostermessage}} </div>
+   
+</body>
+
+</html>

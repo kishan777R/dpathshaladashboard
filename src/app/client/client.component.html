@@ -1,0 +1,533 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="clientdata">
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by First Name"
+                                    [(ngModel)]="clientdata.first_name"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Last Name"
+                                    [(ngModel)]="clientdata.last_name"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Customer Id"
+                                    [(ngModel)]="clientdata.customer_id"><br>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Email"
+                                    [(ngModel)]="clientdata.email"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Mobile"
+                                    [(ngModel)]="clientdata.mobile"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg"
+                                    placeholder="Search by Alternate Mobile"
+                                    [(ngModel)]="clientdata.alternate_mobile"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of courses_list;" value="{{obj._id}}">
+
+
+
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,courses_list)}}
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.sub_course_id">
+                                    <option value="">Select sub Course</option>
+                                    <option *ngFor="let obj of subcourse_list; " value="{{obj._id}}">
+                                        {{obj.course_name}}
+
+
+                                    </option>
+
+                                </select><br>
+
+
+
+                            </div>
+
+                            <br>
+                            <div class="col-md-6" *ngIf="module=='Client'">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.course_status">
+                                    <option value="">Search by Course Status</option>
+                                    <option value="Running"> Running</option>
+                                    <option value="Completed"> Completed</option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6" *ngIf="module=='Client'">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.certificate_issued">
+                                    <option value="">Select Certificate Issued Status</option>
+                                    <option value="YES"> Issued</option>
+                                    <option value="NO"> Not Issued</option>
+
+                                </select><br>
+
+
+
+                            </div>
+
+
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>From Reg. Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="clientdata.from_reg_date"
+                                    placeholder="Search by From Reg date"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>To Reg. Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="clientdata.to_reg_date"
+                                    placeholder="Search by To Reg date"><br>
+                            </div>
+
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>From Order Date</label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="clientdata.from_order_date"
+                                    placeholder="Search by From Order date"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>From certificate issued date</label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="clientdata.from_certificate_issued" placeholder=""><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Course Duration"
+                                    [(ngModel)]="clientdata.duration"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6" *ngIf="module=='Client'">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.final_status">
+                                    <option value="">Search by Final Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Pass">Pass</option>
+                                    <option value="Fail">Fail</option>
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by c Id"
+                                    [(ngModel)]="clientdata.c_id_int"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="clientdata.client_added_by">
+                                    <option value="">Search by Client Added By</option>
+                                    <option value="Admin">Admin</option>
+
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by coupon"
+                                    [(ngModel)]="clientdata.coupon"><br>
+                            </div>
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetclientdatajust()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" style="margin: 10px;"
+                                class="btn btn-primary pull-right input-lg" [disabled]="searchaction"
+                                (click)="searchclient('startagain')"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="clientdataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="exportToExcel()">&nbsp;&nbsp;&nbsp;Export
+                                &nbsp;&nbsp;&nbsp;</button>
+
+
+
+                            <h3 class="panel-title">Clients List (Total
+                                {{totalRecord}} clients)
+
+                                <i class="fa fa-refresh " *ngIf="!searchaction"
+                                    (click)="searchclient('startagain')"></i>
+                                <i class="fa fa-spinner fa-spin" *ngIf="searchaction"></i>
+
+
+                            </h3>
+
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover"
+                                *ngIf="clientdataList && clientdataList.length>0 && courses_subcourse_both_list">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Client Details</th>
+
+                                        <th>Course</th>
+
+                                        <th *ngIf="module=='Client'">Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of clientdataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td> <b>Customer Id: </b>{{obj.customer_id}}
+                                            <br />
+                                            <b>Name: </b> {{obj.first_name}} {{obj.last_name}}
+                                            <br />
+                                            <b>Email: </b>{{obj.email}}
+                                            <br /> <b>Password: </b>{{obj.password}}
+                                            <br />
+                                            <b>Mobile: </b>{{obj.mobile}}
+                                            <br />
+                                            <b>Alternate Mobile: </b>{{obj.alternate_mobile}}
+                                            <br />
+                                            <b>Reg. Date: </b>{{obj.created_on | date:'medium'}}
+                                            <br />
+                                            <b>Client By: </b>{{obj.client_added_by}}
+
+                                            <br />
+                                            <b>Client ID: </b>{{obj._id}} ({{obj.c_id_int}})
+                                            <br />
+                                            <b>Login User Type: </b>{{obj.login_user_type}}
+                                            <br />
+                                            <b>His Affilater Id: </b>{{obj.his_affilitater_c_id_int}}
+                                            <br />
+
+
+                                            <a *ngIf="obj.image_path" href="{{obj.serverpath+obj.image_path}}"
+                                                target="_blank">
+                                                <img style="height: 67;width:67px"
+                                                    src="{{obj.serverpath+obj.image_path}}">
+                                            </a>
+
+                                        </td>
+
+
+                                        <td>
+                                            <b>Total {{obj.course.length}} Course</b>
+                                            <div style="max-height: 200px;   overflow-y:scroll;">
+
+
+                                                <span *ngFor="let objcourse of obj.course ;let  ic=index ">
+                                                    <span *ngIf="module=='Client'">
+                                                        <br /> <i class="fa fa-envelope" *ngIf="!objcourse.sending"
+                                                            style="font-size:  x-large;cursor: pointer;"
+                                                            (click)="SendEmail(obj,objcourse)"></i>
+                                                        <i class="fa fa-spinner fa-spin" *ngIf="objcourse.sending"
+                                                            style="font-size: large;"></i>
+                                                        <br />
+                                                    </span>
+
+                                                    <span *ngIf="module=='Client'">
+
+
+                                                        <b>Course: </b>
+                                                        {{getCourse_name(objcourse.sub_course_id,'SUB') }}
+                                                        ({{getCourse_name(objcourse.course_id,'MAIN')}})<br />
+                                                        <b>Duration: </b> {{objcourse.duration}}<br />
+                                                        <b>Starting date: </b>
+                                                        {{objcourse.starting_date  | date:'mediumDate'}}<br />
+                                                        <b>Ending date: </b>
+                                                        {{objcourse.ending_date  | date:'mediumDate'}}<br />
+                                                        <b>Course Status: </b> {{objcourse.course_status}}<br />
+                                                        <b>Result Status: </b> {{objcourse.final_status}}<br />
+
+                                                        <b>Course Added By: </b>{{objcourse.order_added_by}}<br />
+
+                                                        <b>Order No: </b>{{obj.orders[ic].order_no}}
+                                                        <br />
+                                                        <b>Order date: </b>{{obj.orders[ic].order_date | date:'medium'}}
+                                                        <br />
+                                                        <span *ngIf="checkifamountkeyExists(obj.orders[ic])">
+                                                            <b>Course Price: </b>{{obj.orders[ic].amount }}
+                                                            <br />
+                                                            <b>Paid Amount: </b>{{obj.orders[ic].paid_amount }}
+                                                            <br />
+                                                            <b>Invoice no.: </b>{{obj.orders[ic].invoice }}
+                                                            <br />
+                                                            <b>Discount.: </b>{{obj.orders[ic].discount }}
+                                                            <br />
+                                                            <b>Coupon.: </b>{{obj.orders[ic].coupon }}
+                                                            <br />
+                                                            <b>Affilater Id: </b>{{obj.orders[ic].his_affilitater_c_id_int}}
+                                                            <br />
+                                                        </span>
+
+
+                                                        <span *ngIf="objcourse.course_status=='Completed'">
+                                                            <b>Certificate Issued:</b>
+                                                            {{objcourse.certificate_issued}}<br />
+                                                            <span *ngIf="objcourse.certificate_issued=='YES'">
+                                                                <b>Certificate Issued date:</b>
+                                                                {{objcourse.certificate_issued_date  | date:'mediumDate'}}<br />
+                                                            </span>
+                                                        </span>
+
+                                                    </span>
+
+                                                    <span
+                                                        *ngIf="module=='Issue' && objcourse.certificate_issued=='NO' && objcourse.course_status=='Completed' && objcourse.final_status=='Pass'">
+
+
+                                                        <b>Course: </b>
+                                                        {{getCourse_name(objcourse.sub_course_id,'SUB') }}
+                                                        ({{getCourse_name(objcourse.course_id,'MAIN')}})<br />
+                                                        <b>Duration: </b> {{objcourse.duration}}<br />
+                                                        <b>Starting date: </b>
+                                                        {{objcourse.starting_date  | date:'mediumDate'}}<br />
+                                                        <b>Ending date: </b>
+                                                        {{objcourse.ending_date  | date:'mediumDate'}}<br />
+                                                        <b>Course Status: </b> {{objcourse.course_status}}<br />
+                                                        <b>Result Status: </b> {{objcourse.final_status}}<br />
+
+                                                        <b>Order No: </b>{{obj.orders[ic].order_no}}
+                                                        <br />
+                                                        <b>Order date: </b>{{obj.orders[ic].order_date | date:'medium'}}
+                                                        <br />
+                                                        <span *ngIf="checkifamountkeyExists(obj.orders[ic])">
+                                                            <b>Course Price: </b>{{obj.orders[ic].amount }}
+                                                            <br />
+                                                            <b>Paid Amount: </b>{{obj.orders[ic].paid_amount }}
+                                                            <br />
+                                                            <b>Invoice no.: </b>{{obj.orders[ic].invoice }}
+                                                            <br />
+                                                            <b>Discount.: </b>{{obj.orders[ic].discount }}
+                                                            <br />
+                                                            <b>Coupon.: </b>{{obj.orders[ic].coupon }}
+                                                            <br />
+                                                            <b>Affilater Id: </b>{{obj.orders[ic].his_affilitater_c_id_int}}
+                                                            <br />
+                                                        </span>
+                                                        <br /> <button type="button" class="btn btn-primary   input-sm"
+                                                            [disabled]="objcourse.issueingAction"
+                                                            (click)="issue_unissue(obj,ic,'YES')"><span
+                                                                *ngIf="!objcourse.issueingAction"> Issue
+                                                            </span> <span *ngIf="objcourse.issueingAction"><i
+                                                                    class="fa fa-spinner fa-spin"></i>
+                                                                Wait..</span> </button>
+
+                                                    </span>
+
+
+                                                    <span
+                                                        *ngIf="module=='Issued' && objcourse.certificate_issued=='YES' && objcourse.course_status=='Completed' && objcourse.final_status=='Pass'">
+
+
+                                                        <b>Course: </b>
+                                                        {{getCourse_name(objcourse.sub_course_id,'SUB') }}
+                                                        ({{getCourse_name(objcourse.course_id,'MAIN')}})<br />
+                                                        <b>Duration: </b> {{objcourse.duration}}<br />
+                                                        <b>Starting date: </b>
+                                                        {{objcourse.starting_date  | date:'mediumDate'}}<br />
+                                                        <b>Ending date: </b>
+                                                        {{objcourse.ending_date  | date:'mediumDate'}}<br />
+                                                        <b>Course Status: </b> {{objcourse.course_status}}<br />
+                                                        <b>Result Status: </b> {{objcourse.final_status}}<br />
+
+                                                        <b>Order No: </b>{{obj.orders[ic].order_no}}
+                                                        <br />
+                                                        <b>Order date: </b>{{obj.orders[ic].order_date | date:'medium'}}
+                                                        <br />
+                                                        <span *ngIf="checkifamountkeyExists(obj.orders[ic])">
+                                                            <b>Course Price: </b>{{obj.orders[ic].amount }}
+                                                            <br />
+                                                            <b>Paid Amount: </b>{{obj.orders[ic].paid_amount }}
+                                                            <br />
+                                                            <b>Invoice no.: </b>{{obj.orders[ic].invoice }}
+                                                            <br />
+                                                            <b>Discount.: </b>{{obj.orders[ic].discount }}
+                                                            <br />
+                                                            <b>Coupon.: </b>{{obj.orders[ic].coupon }}
+                                                            <br />
+                                                            <b>Affilater Id: </b>{{obj.orders[ic].his_affilitater_c_id_int}}
+                                                            <br />
+                                                        </span>
+                                                        <span *ngIf="objcourse.course_status=='Completed'">
+                                                            <b>Certificate Issued:</b>
+                                                            {{objcourse.certificate_issued}}<br />
+
+                                                            <b>Certificate Issued date:</b>
+                                                            {{objcourse.certificate_issued_date  | date:'mediumDate'}}<br />
+                                                        </span>
+                                                        <br />
+                                                        <button type="button" class="btn btn-danger   input-sm"
+                                                            [disabled]="objcourse.issueingAction"
+                                                            (click)="issue_unissue(obj,ic,'NO')"><span
+                                                                *ngIf="!objcourse.issueingAction">Un-Issue
+                                                            </span> <span *ngIf="objcourse.issueingAction"><i
+                                                                    class="fa fa-spinner fa-spin"></i>
+                                                                Wait..</span> </button>
+
+                                                    </span>
+
+
+                                                    <hr />
+                                                </span>
+
+
+                                            </div>
+
+
+
+
+                                        </td>
+
+
+                                        <td *ngIf="module=='Client'" style="cursor: pointer;"> <span
+                                                class="lnr lnr-pencil"
+                                                [routerLink]="['../../addclient',obj._id]"></span>&nbsp;<span
+                                                class="lnr lnr-trash" (click)="deleteclient(obj,i)"></span> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && clientdataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="clientdataList &&  clientdataList.length==0">
+                                No client Found
+                            </h4>
+                            <h4 align="center" *ngIf="!clientdataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+
+
+                        <div class="panel-body" style="overflow-x:auto;display: none;" #epltable>
+
+                            <table class="table table-hover"
+                                *ngIf="clientdataListForExcel && clientdataListForExcel.length>0 && courses_subcourse_both_list">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Customer Id</th>
+
+                                        <th>Name</th>
+                                        <th>Mobile</th>
+                                        <th>Email</th>
+                                        <th>Reg. Date</th>
+                                        <th>Course</th>
+                                        <th>Order No.</th>
+                                        <th>Order Date</th>
+                                        <th>Course Price</th>
+                                        <th>Paid Amount</th>
+                                        <th>Discount</th>
+                                        <th>Transaction_id</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let obj of clientdataListForExcel ;let  i=index">
+                                        <td> {{i+1}}</td>
+
+                                        <td> {{obj.customer_id}}</td>
+                                        <td> <span *ngIf="obj.name">{{obj.name}}</span></td>
+                                        <td> {{obj.mobile}}</td>
+                                        <td> {{obj.email}}</td>
+
+                                        <td>{{obj.created_on | date:'medium'}}</td>
+                                        <td><span *ngIf="obj.sub_course_id">
+
+                                                {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                                ({{getCourse_name(obj.course_id,'MAIN')}})
+
+                                            </span></td>
+
+                                        <td> {{obj.order_no}}</td>
+                                        <td> {{obj.order_date}}</td>
+                                        <td> {{obj.amount}}</td>
+                                        <td> {{obj.paid_amount}}</td>
+                                        <td> {{obj.discount}}</td>
+                                        <td> {{obj.trnsaction_id}}</td>
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

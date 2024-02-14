@@ -1,0 +1,304 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="notificationdata">
+                            <div class="col-md-12">
+
+                                <input list="browsers" id="clientsearched" type="text" class="form-control input-lg"
+                                    placeholder="Search by client" (change)="onSortChange($event)">
+                                <datalist id="browsers">
+                                    <option *ngFor="let obj of clientdataList;"
+                                        value="{{obj.first_name}} {{obj.last_name}} ({{obj.customer_id}})">
+
+                                </datalist>
+
+
+                                <br>
+                            </div>
+
+
+
+                            <br>
+                            <div class="col-md-12">
+
+                                <input type="text" class="form-control input-lg" placeholder="Search by message"
+                                    [(ngModel)]="notificationdata.message">
+
+
+
+                                <br>
+                            </div>
+
+
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>
+                                    Search by From notification date
+                                </label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="notificationdata.from_to_be_sent_on"
+                                    placeholder="Search by From notification date"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6"> <label>
+                                    Search by To notification date
+                                </label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="notificationdata.to_to_be_sent_on"
+                                    placeholder="Search by To notification date"><br>
+                            </div>
+
+
+
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control input-lg"
+                                    [(ngModel)]="notificationdata.send_after_hour"
+                                    placeholder="Send notification after hour"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="notificationdata.seen_status">
+                                    <option value="">Search by Seen Status</option>
+                                    <option value="FALSE">Not Seen
+                                    <option>
+                                    <option value="TRUE">Seen</option>
+
+                                </select><br>
+                            </div> <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="notificationdata.sent_status">
+                                    <option value="">Search by Sent Status</option>
+                                    <option value="FALSE">Not Sent
+                                    <option>
+                                    <option value="TRUE">Sent</option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="notificationdata.generated_type">
+                                    <option value="">Search by Sent Status</option>
+                                    <option value="AUTOMATIC">AUTOMATIC
+                                    <option>
+                                    <option value="MANUAL">MANUAL</option>
+
+                                </select><br>
+                            </div>
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetnotificationdata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="searchaction" (click)="searchNotification('startagain')"
+                                style="margin: 10px;"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="notificationdataList && clientdataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Notification List (Total
+                                {{totalRecord}} Notifications )&nbsp;
+                                <i class="fa fa-refresh " (click)="searchNotification('startagain')"></i>
+                            </h3>
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover"
+                                *ngIf="notificationdataList && notificationdataList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Message</th>
+                                        <th>Notification Date</th>
+                                        <th>
+                                            Send notification after hour
+                                        </th>
+                                        <th>
+                                            Customer
+                                        </th>
+                                        <th>
+                                            Notification Type
+                                        </th>
+                                        <th>
+                                            Status
+                                        </th>
+                                        <th>
+                                            Created On
+                                        </th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of notificationdataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td> {{obj.message}}</td>
+                                        <td> {{obj.to_be_sent_on | date:"medium"}}
+
+                                            
+                                           
+                                        </td>
+                                        <td> {{obj.send_after_hour}}</td>
+
+                                        <td>
+                                            <span *ngIf="obj.c_id_int==-1">
+                                                For All
+                                            </span>
+                                            <span *ngIf="obj.c_id_int!==-1">
+                                        <td>{{getClientname(obj.c_id_int)}}</td>
+                                        </span>
+
+
+                                        </td>
+                                        <td>
+                                            {{obj.generated_type}}
+                                        </td>
+                                        <td>
+                                            <span *ngIf="obj.c_id_int!==-1">
+
+
+                                                <b>Sent to user :</b> <span *ngIf="obj.sent_status">
+                                                    Yes
+                                                </span><span *ngIf="!obj.sent_status">
+                                                    No
+                                                </span><br />
+                                                <b>Seen by user :</b><span *ngIf="obj.seen_status">
+                                                    Yes
+                                                </span><span *ngIf="!obj.seen_status">
+                                                    No
+                                                </span>
+
+                                            </span>
+                                            <span *ngIf="obj.c_id_int==-1">
+                                                <h4 (click)="openModal(obj,myModal )" style="cursor: pointer;color: blue;">
+                                                    List of Sent to user and Seen by
+                                                </h4>
+
+
+
+                                            </span>
+
+                                        </td>
+                                        <td> {{obj.created_on | date:"medium" }}</td>
+                                        <td style="cursor: pointer;">
+                                            <span *ngIf="obj.c_id_int!==-1 && obj.generated_type!='AUTOMATIC' && obj.sent_status==false ">
+
+
+                                                <span class="lnr lnr-pencil"
+                                                    [routerLink]="['../addnotification',obj._id]"></span>&nbsp;<span
+                                                    class="lnr lnr-trash" (click)="deleteNotification(obj,i)"></span>
+                                            </span>
+                                            <span *ngIf="obj.c_id_int==-1 && obj.generated_type!='AUTOMATIC' && obj.sentbytillnow_c_id_int.length==0 ">
+
+
+                                                <span class="lnr lnr-pencil"
+                                                    [routerLink]="['../addnotification',obj._id]"></span>&nbsp;<span
+                                                    class="lnr lnr-trash" (click)="deleteNotification(obj,i)"></span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && notificationdataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="notificationdataList &&  notificationdataList.length==0">
+                                No Notification Found
+                            </h4>
+                            <h4 align="center" *ngIf="!notificationdataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;">
+                <h4>Seen by</h4>
+
+                <span *ngFor="let obj of modalObjData.seenbytillnow_c_id_int ;">
+
+                    {{getClientname(obj)}}
+
+                </span>
+                <hr />
+                <h4>Sent to</h4>
+
+                <span *ngFor="let obj of modalObjData.sentbytillnow_c_id_int ;">
+
+                    {{getClientname(obj)}}
+
+                </span>
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+    </div>
+</div>

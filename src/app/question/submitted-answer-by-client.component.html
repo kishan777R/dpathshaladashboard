@@ -1,0 +1,544 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="questiondata">
+                            <div class="col-md-12">
+
+                                <input list="browsers" id="clientsearched" type="text" class="form-control input-lg"
+                                    placeholder="Search by client" (change)="onSortChange($event)">
+                                <datalist id="browsers">
+                                    <option *ngFor="let obj of clientdataList;"
+                                        value="{{obj.first_name}} {{obj.last_name}} ({{obj.customer_id}})">
+
+                                </datalist>
+
+
+                                <br>
+                            </div>
+
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of courseListforthisModule;" value="{{obj._id}}">
+                                        
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,courseListforthisModule)}}
+                                    
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.sub_course_id"
+                                    (change)="setMaxMinDateAccordingToSubCourse()">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList; let cy=index;" value="{{cy}}">
+                                        {{obj.course_name}}
+
+                                        <span *ngIf="obj.starting_date"> (Course Duration:
+                                            {{obj.starting_date | date:"mediumDate"}} to
+                                            {{obj.ending_date | date:"mediumDate"}})</span>
+                                    </option>
+
+                                </select><br>
+
+
+
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>
+                                    Search by From Exam date
+                                </label>
+
+
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="questiondata.from_exam_date" placeholder="Search by From Exam date"
+                                    min="{{from_min_date}}" max="{{to_max_date}}"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>
+                                    Search by To Exam date
+                                </label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="questiondata.to_exam_date"
+                                    placeholder="Search by To Exam date" min="{{from_min_date}}"
+                                    max="{{to_max_date}}"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.review_status">
+                                    <option value="">Search by Review Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Reviewed Manually">Reviewed Manually</option>
+                                    <option value="Reviewed Automatically">Reviewed Automatically</option>
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.final_status">
+                                    <option value="">Search by Final Status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Pass">Pass</option>
+                                    <option value="Fail">Fail</option>
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.category">
+                                    <option value="">Search by Question Category</option>
+                                    <option value="Daily">For Daily Test</option>
+                                    <option value="Week">For Weekly Test</option>
+                                    <!-- <option value="Month">For Monthly Test</option> -->
+                                    <option value="Final">For Final Test</option>
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.level"
+                                    placeholder="Week Number"
+                                    *ngIf="questiondata.category!=='' && questiondata.category!=='Final'"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.day_number"
+                                    placeholder="Day Number" *ngIf="questiondata.category=='Daily'"><br>
+                            </div>
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+
+
+
+
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetquestiondataB()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"
+                                style="margin: 10px;" [disabled]="searchaction"
+                                (click)="submittedAnswerList_search('startagain')"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+                            <button type="button" class="btn btn-success pull-right input-lg" style="margin: 10px;"
+                                (click)="deleteSubmittedAnswer()"> Delete Submitted questions</button>&nbsp;
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="submittedAnswerList && clientdataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Submitted Set List (Total
+                                {{totalRecord}} Submitted Sets )&nbsp;
+                                <i class="fa fa-refresh " (click)="submittedAnswerList_search('startagain')"></i>
+                            </h3>
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover"
+                                *ngIf="submittedAnswerList && submittedAnswerList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Client </th>
+                                        <th>Set Details</th>
+                                        <th>Exam Date</th>
+
+                                        <th>Review Status</th>
+                                        <th>Final Status</th>
+                                        <th>Question/Passage Details</th>
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of submittedAnswerList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>{{getClientname(obj.c_id)}}
+
+
+                                        </td>
+
+
+                                        <td>
+                                            <b>Course:</b> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                            ({{getCourse_name(obj.course_id,'MAIN')}})
+                                            <br />
+                                            <b> Category:</b> {{obj.category}}
+                                            <span *ngIf="obj.day_number!='0'">({{obj.day_number}}&nbsp;Day)</span> <span
+                                                *ngIf="obj.level!='0'">({{obj.level}}&nbsp;Week)</span>
+                                            <br />
+                                            <b> Practice Round:</b> {{obj.test_level }}
+                                            <br />
+                                            <b>Total Marks Obtained:</b> {{obj.total_marks_obtained}}
+                                            <br />
+                                            <b>Set Attempts:</b> {{obj.how_many_attempt_for_this_set}}
+                                            <br />
+                                            <b> Submitted On:</b> {{obj.submitted_on | date:"medium"}}
+                                        </td>
+
+                                        <td>
+                                            {{obj.exam_date | date:"mediumDate"}}</td>
+
+                                        <td>
+                                            {{obj.review_status}}
+                                            <span *ngIf="obj.review_status!='Pending'">
+                                                <br />({{obj.review_on | date:"medium"}})
+                                            </span>
+
+                                        </td>
+                                        <td>
+                                            <span *ngIf="obj.tablestatus=='HALF-SUBMITTED'">In Between</span>
+                                            <div class="col-md-12"
+                                                *ngIf="obj.tablestatus=='TRUE' || obj.tablestatus=='true'">
+                                                <select class="form-control input-md" [(ngModel)]="obj.final_status"
+                                                    (change)="updateFinalStatus(obj)">
+                                                    <option value="">Select Final Status</option>
+                                                    <option value="Pass">Pass</option>
+                                                    <option value="Fail">Fail</option>
+                                                    <option value="Pending">Pending</option>
+                                                </select><br>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+
+                                            <span style="cursor: pointer;color: indigo;"
+                                                (click)="openModal(obj,myModal,'question',i)">Click for questions
+                                                details</span>
+
+
+                                            <span *ngIf="obj.submitted_passageArray.length>0"
+                                                style="cursor: pointer;color: indigo;"
+                                                (click)="openModal(obj,myModal,'passage',i)"><br>Click for passage
+                                                details</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && submittedAnswerList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="submittedAnswerList &&  submittedAnswerList.length==0">
+                                No Question Found
+                            </h4>
+                            <h4 align="center" *ngIf="!submittedAnswerList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData || !clientdataList" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content" *ngIf="showingwhatinmodal=='question'">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3> Question Lists for {{modalObjData.category }} <span
+                    *ngIf="modalObjData.day_number!='0'">({{modalObjData.day_number}}&nbsp;Day)</span><span
+                    *ngIf="modalObjData.level!='0'">({{modalObjData.level}}&nbsp;Week)</span> Exam held on
+                {{modalObjData.exam_date | date:"mediumDate"}} </h3>
+            <h4> Client - {{getClientname(modalObjData.c_id) }}, Course -
+                {{getCourse_name(modalObjData.sub_course_id,'SUB') }}
+                ({{getCourse_name(modalObjData.course_id,'MAIN')}}) </h4>
+            <h4> Total marks obtained in Questions - {{ modalObjData.total_marks_obtained  }}/
+                {{ modalObjData.questionpaperMarks  }}, Final Status -
+                {{ modalObjData.final_status}} </h4>
+
+        </div>
+        <div class="modal-body">
+
+
+            <div class="panel-body" style="overflow-x:auto;max-height:460px;overflow-y:scroll;">
+                <div class="panel panel-headline"
+                    *ngFor="let modalObjData_perQ of modalObjData.question_details_array ;let  i=index"
+                    style="background-color: lightgrey;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{i+1}}. {{modalObjData_perQ.question}}<span
+                                *ngIf="modalObjData_perQ.mark" style="font-size: large;">&nbsp;(marks-
+                                {{modalObjData_perQ.mark}}) (duration-{{modalObjData_perQ.duration_of_question}}
+                                sec)</span></h3>
+
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-5 ">
+                            <h4>Question Details</h4>
+                            <div class="col-md-12 panel panel-body">
+                                <h4>Options</h4>
+
+                                <span *ngFor="let objOptions of modalObjData_perQ.options ;let  io=index ">
+                                    <span *ngIf="objOptions.value!='' ">
+                                        {{io+1}}.
+
+                                        <b *ngIf="objOptions.status" style="color: seagreen;">
+                                            {{objOptions.value}}
+                                        </b>
+
+                                        <span *ngIf="!objOptions.status">
+                                            {{objOptions.value}}
+                                        </span>
+                                        <br />
+                                    </span>
+                                </span>
+                            </div>
+
+
+                            <span *ngIf="modalObjData_perQ.remark">
+                                <div class="col-md-12 panel panel-body">
+                                    <h4>Answer Explanation</h4>
+                                    {{modalObjData_perQ.remark}}
+                                </div>
+                            </span>
+                            <span *ngIf="modalObjData_perQ.audio_line">
+                                <div class="col-md-12 panel panel-body">
+                                    <h4>Audio Line as per question</h4>
+                                    {{modalObjData_perQ.audio_line}}
+                                    <h4>Audio Line as per answer</h4>
+                                    {{modalObjData_perQ['user_attempt']['audio_to_show_according_to_answer']}}
+                                </div>
+                            </span>
+                        </div>
+                        <div class="col-md-1 ">
+                        </div>
+                        <div class="col-md-5 ">
+                            <h4>User Answers Details</h4>
+                            <div class="panel panel-body"
+                                *ngIf="modalObjData_perQ.user_attempt.answer_submitted_status=='SKIPPED'"
+                                style="color: red;">
+                                SKIPPED
+                                <br />
+                            </div>
+                            <div *ngIf="modalObjData_perQ.user_attempt.answer_submitted_status=='SUBMITTED'">
+
+                                <div class="panel panel-body">
+
+                                    <span>
+                                        User Answer:
+                                        {{modalObjData_perQ.user_attempt.answer_by_user}}</span><br />
+                                    <span>Answer Status:
+                                        <span *ngIf="modalObjData_perQ.user_attempt.answer_status=='TRUE'"
+                                            style="color: green;">Matched</span>
+                                        <span *ngIf="modalObjData_perQ.user_attempt.answer_status=='FALSE'"
+                                            style="color: red;">Not Matched</span>
+
+                                    </span><br />
+
+                                    <span>Starting Time:
+                                        {{modalObjData_perQ.user_attempt.starting_time_of_this_question}}</span><br />
+                                    <span>Ending Time:
+                                        {{modalObjData_perQ.user_attempt.ending_time_of_this_question}}</span><br />
+                                    <span>Time Taken:
+                                        {{CommonServiceService.secondToMinConvert(modalObjData_perQ.user_attempt.time_taken_for_this_question)}}
+
+                                    </span><br />
+
+                                </div>
+
+                                <div class="panel panel-body">
+                                    <h4>Audio Status:
+                                        <span *ngIf="modalObjData_perQ.user_attempt.audio_status=='TRUE'"
+                                            style="color: green;">Matched</span>
+                                        <span *ngIf="modalObjData_perQ.user_attempt.audio_status=='FALSE'"
+                                            style="color: red;">Not Matched</span>
+                                        <span
+                                            *ngIf="modalObjData_perQ.user_attempt.audio_status!=='TRUE' && modalObjData_perQ.user_attempt.audio_status!=='FALSE'"
+                                            style="color: red;"> {{modalObjData_perQ.user_attempt.audio_status}}</span>
+
+                                    </h4>
+
+                                    <span
+                                        *ngIf="modalObjData_perQ.user_attempt.audio_status=='TRUE' ||  modalObjData_perQ.user_attempt.audio_status=='FALSE'">
+                                        Audio Attempts:<br />
+                                        <span
+                                            *ngFor="let objAudioAttempts of modalObjData_perQ.user_attempt.audio_try_array_for_this_question_and_this_attempt ;let  iu=index ">
+                                            {{iu+1}}. {{objAudioAttempts}}<br />
+                                        </span><br />
+                                        <span>
+                                            Final Attempt: {{modalObjData_perQ.user_attempt.audio_selected_finally}}
+                                        </span>
+
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+                            <div class="panel panel-body">
+
+                                <h4>Marks Obtained: {{modalObjData_perQ.user_attempt.marks_obtained}}</h4>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div> <br /> <button type="button" class="btn btn-danger pull-right input-md"
+                (click)="closemodal(myModal)">
+                Close</button>&nbsp;
+
+        </div>
+
+    </div>
+
+    <div class="modal-content" *ngIf="showingwhatinmodal=='passage'">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3> Passage Lists for {{modalObjData.category }} <span
+                    *ngIf="modalObjData.day_number!='0'">({{modalObjData.day_number}}&nbsp;Day)</span><span
+                    *ngIf="modalObjData.level!='0'">({{modalObjData.level}}&nbsp;Week)</span> Exam held on
+                {{modalObjData.exam_date | date:"mediumDate"}} </h3>
+            <h4> Client - {{getClientname(modalObjData.c_id) }}, Course -
+                {{getCourse_name(modalObjData.sub_course_id,'SUB') }}
+                ({{getCourse_name(modalObjData.course_id,'MAIN')}}) </h4>
+            <h4> Total marks obtained in passage - {{  obtainedmarkofpassage }}/{{ maxmarkofpassage}}, Final Status -
+                {{ modalObjData.final_status}} </h4>
+            <h3 align="center" style="color: red;">{{modalerror}}</h3>
+            <h3 align="center" style="color: green;">{{modalsuccess}}</h3>
+
+        </div>
+        <div class="modal-body">
+
+
+            <div class="panel-body" style="overflow-x:auto;max-height:460px;overflow-y:scroll;">
+                <div class="panel panel-headline"
+                    *ngFor="let modalObjData_perPassage of modalObjData.submitted_passageArray ;let  i=index"
+                    style="background-color: lightgrey;">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{i+1}}.
+                            {{modalObjData_perPassage.what_type_of_screen_if_not_normal_flow}}:{{modalObjData_perPassage.headingvalue}}
+                            <span *ngIf="modalObjData_perPassage.mark" style="font-size: large;">&nbsp;(Max marks-
+                                {{modalObjData_perPassage.max_mark}}) (Obtained marks-
+                                {{modalObjData_perPassage.marks_obtained}})
+                                sec)</span></h3>
+
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12 ">
+                            <h3 style="color: red;" *ngIf="modalObjData_perPassage.audiopath==''">SKIPPED</h3>
+                            <audio *ngIf="modalObjData_perPassage.audiopath!=''" controls src="{{modalObjData_perPassage.audiopath}}">
+
+                            </audio>
+                            <br/>   <br/>
+                            Mark obtained out of {{modalObjData_perPassage.max_mark}} - {{modalObjData_perPassage.marks_obtained}}
+                            
+                            <input *ngIf="modalObjData_perPassage.audiopath!=''" type="text" class="form-control input-lg"
+                                [(ngModel)]="modalObjData_perPassage.marks_obtained" placeholder="Mark Obtained">
+                            <br/>  <br/>
+                        </div>
+                        <div class="col-md-12 " *ngIf="modalObjData_perPassage.audiopath!=''">
+                        <angular-editor   style="background-color: white;" id="editorMain"
+                            [placeholder]="'Enter remark here...'" [(ngModel)]="modalObjData_perPassage.review_remark">
+                        </angular-editor>  <br/>  <br/>
+                    </div>
+                        
+
+                    <div class="col-md-12 ">
+                        <div style="color: black;" class="col-md-12 "
+                            [innerHTML]="modalObjData_perPassage.content_when_we_do_not_need_speeker">
+
+                        </div>
+
+                        <p *ngFor="let objPoint of modalObjData_perPassage.pointsArr ;let  point=index  "
+                            style="margin-left: 5px;">
+                            <span *ngIf="objPoint.is_example">
+                                <span *ngIf="objPoint.pointvalue!=''" style="color: black;">
+                                    <h6 style="font-size: 16px;">
+                                        <span *ngFor="let objofword of objPoint.word_array;">
+                                            <span
+                                                [ngStyle]="{'color': convertIntoColoredvalue(objPoint,objofword.perword)}">
+                                                {{objofword.perword}}&nbsp;
+                                            </span>
+                                        </span>
+
+                                    </h6>
+                                </span>
+                            </span>
+                            <span *ngIf="!objPoint.is_example">
+                                <span *ngIf=" objPoint.pointvalue!=''" style="color: black;">
+                                    <h6 style="font-size: 16px;">
+
+                                        {{ objPoint.pointvalue }}
+                                    </h6>
+                                </span>
+                            </span>
+
+
+                        </p>  </div>
+
+
+                    </div>
+                </div>
+
+
+
+            </div> <br /> <button type="button" class="btn btn-danger pull-right input-md"
+                (click)="closemodal(myModal)">
+                Close</button>&nbsp;
+            <button type="button" *ngIf="modalObjData.passage_submitted" class="btn btn-success pull-right input-md" [disabled]="saveactionOfPassage"
+                (click)="updatemarksofpassage()"> Save Passage Marks</button>&nbsp;
+
+        </div>
+
+    </div>
+</div>

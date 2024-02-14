@@ -1,0 +1,186 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="contactdata">
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by first name"
+                                    [(ngModel)]="contactdata.first_name"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by last name"
+                                    [(ngModel)]="contactdata.last_name"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by mobile"
+                                    [(ngModel)]="contactdata.mobile"><br>
+                            </div>
+
+                            
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by email"
+                                    [(ngModel)]="contactdata.email"><br>
+                            </div>
+
+                            <br>
+                           
+                            <div class="col-md-6">
+
+                                <label>Contact Date from</label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="contactdata.from_contact_date" placeholder="Search by From contact date"
+                                     ><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>Contact Date To</label>
+
+                                <input type="date" class="form-control input-lg" [(ngModel)]="contactdata.to_contact_date"
+                                    placeholder="Search by To Contact date" ><br>
+                            </div>
+                            <br>
+
+                            
+
+                           
+                                
+                            <div class="col-md-6  ">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="contactdata.subject"
+                                    placeholder="Search by Subject "
+                                     ><br>
+                            </div>
+                            <br>
+                                
+                                <div class="col-md-6  ">
+                                    <input type="number" class="form-control input-lg" [(ngModel)]="contactdata.message"
+                                        placeholder="Search by  message"
+                                         ><br>
+                                </div>
+                            <br>
+                            
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                            [disabled]="searchaction" (click)="resetcontatcdata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"  [disabled]="searchaction"
+                                (click)="searchContact('startagain')" style="margin: 10px;"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="contactlist ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "  
+                            (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Contact List (Total
+                                {{totalRecord}} Contacts)</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+                            
+                            <table class="table table-hover"
+                                *ngIf="contactlist && contactlist.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Customer Details</th>
+                                       
+                                        <th>Message</th>
+                                        
+
+                                        <th>Contacted On</th>
+                                       
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of contactlist ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td> <b >Name : </b>{{obj.first_name}} {{obj.last_name}} <br/>
+                                            <b >Email : </b>{{obj.email}}   <br/>
+                                            <b >Mobile : </b>{{obj.mobile}}   <br/>
+                                            <b>Our Customer : </b> {{obj.alreadycustomer}}
+                                           
+                                            
+                                              </td>
+                                       
+                                        <td> <b >Subject : </b>{{obj.subject}}   <br/>
+                                            <b >Message : </b>{{obj.message}}   <br/></td>
+                                      
+                                        <td>{{obj.created_on | date:"mediumDate"}}</td>
+                                        
+                                    </tr>
+                                   <tr>
+                                       <td>
+                                            <div class="search-results"
+                                            infinite-scroll
+                                            [infiniteScrollDistance]="scrollDistance"
+                                            [infiniteScrollUpDistance]="scrollUpDistance"
+                                            [infiniteScrollThrottle]="throttle"
+                                            (scrolled)="onScrollDown()"
+                                            (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin" *ngIf="infinescrollerstatus && contactlist.length<totalRecord" style="font-size:  large;"></i>
+                                       </td>
+                                   </tr>
+
+                                </tbody>
+                            </table>
+                            
+                            <h4 align="center"
+                                *ngIf="contactlist &&  contactlist.length==0">
+                                No Data Found
+                            </h4>
+                            <h4 align="center" *ngIf="!contactlist ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+ 

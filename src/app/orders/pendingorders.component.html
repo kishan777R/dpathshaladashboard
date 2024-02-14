@@ -1,0 +1,84 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="orderlist ">
+
+                            <h3 class="panel-title">  Orders List (Total
+                                {{orderlist.length}} )
+                                <i class="fa fa-spinner fa-spin" *ngIf="searchaction1"></i>
+                                <i class="fa fa-refresh " *ngIf="!searchaction1" (click)="getNonPendingOrderist()"></i>
+
+
+                            </h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="orderlist && orderlist.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Order no</th>
+
+                                        <th>Status</th>
+
+                                        <th>Order Date</th>
+                                        <!-- <th>Action </th> -->
+
+
+
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of orderlist ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td> {{obj.order_no}}
+
+
+                                        </td>
+                                        <td> {{obj.order_status}}
+
+
+                                        </td>
+                                        <td> {{obj.order_date | date:"medium"}}
+
+
+                                        </td>
+                                        <!-- <td> <i class="fa fa-refresh " *ngIf="!searchaction"
+                                                (click)="checkStatusAgain(obj.order_no)"></i>
+                                            <i class="fa fa-spinner fa-spin" *ngIf="searchaction"></i>
+
+                                        </td> -->
+                                    </tr>
+
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="orderlist &&  orderlist.length==0">
+                                No Data Found
+                            </h4>
+                            <h4 align="center" *ngIf="!orderlist ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

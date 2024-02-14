@@ -1,0 +1,250 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="questiondata">
+
+                            <div class="col-md-4">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                        
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    </option>
+
+                                </select> 
+                            </div>
+                         
+                            <div class="col-md-4">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select> 
+                            </div>
+
+
+
+
+ 
+
+                            <div class="col-md-4  ">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.day_number"
+                                    placeholder="Search by Day Number "><br>
+                            </div>
+
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetquestiondata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="searchaction" (click)="searchTut('startagain')" style="margin: 10px;"><span
+                                    *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="tutdataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Tutorial List (Total
+                                {{totalRecord}} Tutorials)</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="tutdataList && tutdataList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Topic</th>
+                                        <th>Day Number</th>
+                                        <th>Course</th>
+
+
+                                        <th>Added On</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of tutdataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td style="cursor: pointer;color: darkslategrey;"
+                                            (click)="openModal(obj,myModal)">
+                                            <b>{{obj.topic}} </b>
+
+
+
+
+                                        </td>
+                                        <td>
+                                            <b *ngIf="obj.topic!='Introduction'">{{obj.day_number}} </b>
+
+
+
+
+                                        </td>
+
+                                        <td><span *ngIf="obj.topic!='Introduction'">
+                                            {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                            ({{getCourse_name(obj.course_id,'MAIN')}})
+                                        </span> </td>
+
+                                        <td>{{obj.created_on | date:"mediumDate"}}</td>
+                                        <td style="cursor: pointer;">
+                                            
+                                            <a href="../addtutorial/{{obj._id}}" target="_blank" *ngIf="obj.topic!='Introduction'">
+                                                <span  class="lnr lnr-pencil"  ></span> 
+
+
+                                            </a>
+                                        
+                                            <a href="../addtutorial/-2" target="_blank" *ngIf="obj.topic=='Introduction'">
+                                                <span  class="lnr lnr-pencil"  ></span> 
+
+
+                                            </a>
+                                         
+                                                
+                                                
+                                                &nbsp;<span *ngIf="obj.topic!='Introduction'"
+                                                class="lnr lnr-trash" (click)="deleteTut(obj,i)"></span>
+
+
+
+                                            <!-- <span (click)="updateQ_in_for_query(obj)">Update Qid </span>
+                                            {{obj.question_id_join_query}} -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && tutdataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="tutdataList &&  tutdataList.length==0">
+                                No Question Found
+                            </h4>
+                            <h4 align="center" *ngIf="!tutdataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h2 align="center">
+                {{modalObjData.topic}}
+            </h2>
+            <h3> {{getCourse_name(modalObjData.sub_course_id,'SUB') }}
+                ({{getCourse_name(modalObjData.course_id,'MAIN')}}), Day Number - {{modalObjData.day_number}} </h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;max-height:460px;overflow-y:scroll;">
+                <div *ngFor="let objScreen of modalObjData.describeArr  ;let  screen=index "
+                    class="col-md-12 panel panel-body">
+                    <h3 align="center">
+                        Screen {{screen+1}}
+                    </h3>
+                    <div *ngFor="let obj of objScreen  ;let  heading=index " class="col-md-12">
+
+                        <h4 align="left">
+                            {{obj.headingvalue}}  <small>({{obj.headingvalue_language}})</small>
+                        </h4>
+                        <div *ngFor="let objPoint of obj.pointsArr ;let  point=index  " class="col-md-8">
+                            <span *ngIf="objPoint.is_example">
+                                <span *ngFor="let objofword of objPoint.word_array;">
+                                    <span [ngStyle]="{'color': convertIntoColoredvalue(objPoint,objofword.perword)}">
+                                        {{objofword.perword}}
+                                    </span>
+                                </span>
+                            </span>
+                            <span *ngIf="!objPoint.is_example">
+                                {{objPoint.pointvalue}}
+                            </span>
+
+                            <small>({{objPoint.pointvalue_language}})</small>
+
+
+                            <br />
+                        </div>
+
+                        <br>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

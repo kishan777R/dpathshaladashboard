@@ -1,0 +1,132 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 *ngIf="editingid!=0" class="panel-title pull-right"> <a
+                                        [routerLinkActive]="['active']" [routerLink]="['../../notificationList']" class="">
+                                        << Back to notifications list </a>
+                                </h3>
+                                <h3 class="panel-title">
+                                    <span *ngIf="editingid==0">Add new notification</span><span
+                                        *ngIf="editingid!=0">Edit notification</span>
+                                    [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="notificationdata">
+                            <br>
+                            <div class="col-md-12">
+                                <br>
+                                <input type="checkbox"   [(ngModel)]="checkboxModel"
+                                (click)="updateACIDINT()" >&nbsp;All client<br>
+                                <span *ngIf="editingid==0">
+                                   
+                                    <input list="browsers" id="clientsearched" type="text" class="form-control input-lg"
+                                        placeholder="Enter client" (change)="onSortChange($event)">
+                                    <datalist id="browsers">
+                                        <option *ngFor="let obj of clientdataList;"
+                                            value="{{obj.first_name}} {{obj.last_name}} ({{obj.customer_id}})">
+    
+                                    </datalist>
+                                </span>
+
+                                <span  *ngIf="editingid!=0"> 
+                                    <select class="form-control input-lg" [(ngModel)]="notificationdata.c_id_int" (change)="onchangeCientWhenEditing()">
+                                        <option value="">Select Client</option>
+                                        <option  *ngFor="let obj of clientdataList ; " value="{{obj.c_id_int}}">{{obj.first_name}} {{obj.last_name}} ({{obj.customer_id}})</option>
+                                        
+                                         
+                                    </select>
+                                </span>
+                               
+
+                                <br>
+                                
+                            </div>
+
+
+
+                            <br>
+                            <div class="col-md-12">
+
+                                <input type="text" class="form-control input-lg" placeholder="Message"
+                                    [(ngModel)]="notificationdata.message">
+
+
+
+                                <br>
+                            </div>
+
+
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>
+                                    Notification date
+                                </label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="notificationdata.to_be_sent_on" placeholder="  Notification date"><br>
+                            </div>
+
+
+
+
+
+                            <br>
+                            <div class="col-md-6"> <br>
+                                <input type="number" class="form-control input-lg"
+                                    [(ngModel)]="notificationdata.send_after_hour"
+                                    placeholder="Send notification after hour"><br>
+                            </div>
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+
+
+
+
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction" (click)="resetnotificationdata()"> Reset</button>&nbsp;
+
+
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                                (click)="saveNotification()" style="margin: 10px;"><span *ngIf="!saveaction"><span
+                                        *ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Edit</span>
+                                        Notification</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!notificationdata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

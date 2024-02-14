@@ -1,0 +1,269 @@
+<!-- LEFT SIDEBAR -->
+<div id="sidebar-nav" class="sidebar">
+	<div class="sidebar-scroll">
+		<nav>
+			<ul class="nav" style="max-height: 600px;
+			overflow-y: scroll;">
+				<li>
+					<a [routerLinkActive]="['active']" [routerLink]="['dashboard']">
+						<i class="lnr lnr-home"></i> <span>Dashboard</span>
+					</a>
+				</li>
+
+				<li>
+					<a href="#subCourse" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Courses</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subCourse" class="collapse ">
+						<ul class="nav">
+							<li><a [routerLinkActive]="['active']" [routerLink]="['courses']" class="">Main Course</a>
+							</li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['subcourses']" class="">Sub  Courses
+								</a></li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['addtutorial',0]" class="">Add
+									Tutorial</a>
+							</li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['tutoriallist']" class="">Tutorial
+									List</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#video" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Video Tutorial</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="video" class="collapse ">
+						<ul class="nav">
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['addtopic/0']" class="">Add Video
+									Topic
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['topicList']" class="">Topic List
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['addvideo/0']" class="">Add Video
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['videoList']" class="">Video List
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<li>
+					<a href="#asked" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Asked Questions</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="asked" class="collapse ">
+						<ul class="nav">
+
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['askedquestionlist','ALL']"
+									class="">All
+								</a>
+							</li>
+
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['askedquestionlist','SEEN']"
+									class="">Answered
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['askedquestionlist','UNSEEN']"
+									class="">Un-answered
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</li>
+
+
+
+
+				<li>
+					<a href="#subC" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Clients</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subC" class="collapse ">
+						<ul class="nav">
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['addclient/0']" class="">Add Clients
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['clientlist/Client']" class="">Clients
+									List
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#teacher" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Teacher</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="teacher" class="collapse ">
+						<ul class="nav">
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teacherlist']" class="">Registered
+									Teacher
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/ALL']" class="">All
+									Courses
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/pendingforapproval']"
+									class=""> New Courses Request
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/approved']"
+									class="">Approved Courses
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/rejected']"
+									class="">Rejected Courses
+
+								</a>
+							</li>
+							
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/pendingforpublish']"
+									class="">Publishing Request Courses
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teachercourses/published']" class="">
+									Published Courses
+								</a>
+							</li>
+
+
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teacherlecture/ALL']" class=""> All
+									Lecture
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teacherlecture/pendingforapproval']"
+									class="">New Lecture
+									Request
+
+								</a>
+							</li>
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teacherlecture/approved']" class="">
+									Approved
+									Lecture
+								</a>
+							</li>	
+							<li>
+								<a [routerLinkActive]="['active']" [routerLink]="['teacherlecture/rejected']" class="">
+									Rejected
+									Lecture
+								</a>
+							</li>
+						
+
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#subQ" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Questions</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subQ" class="collapse ">
+						<ul class="nav">
+							<li><a [routerLinkActive]="['active']" [routerLink]="['addquestion',0]" class="">Add
+									Questions</a></li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['questionlist']" class="">Questions
+									List</a>
+							</li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['assignedquestions/0']"
+									class="">Assigned
+									Questions </a></li>
+							<!-- <li><a [routerLinkActive]="['active']" [routerLink]="['assignedquestions/1']"
+										class="">Submitted
+										Answers  </a></li> -->
+
+							<li><a [routerLinkActive]="['active']" [routerLink]="['submitted_answers/ALL']"
+									class="">Submitted
+									Answers </a></li>
+
+						</ul>
+					</div>
+				</li>
+
+				<li>
+					<a href="#subI" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Certificate</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subI" class="collapse ">
+						<ul class="nav">
+							<li><a [routerLinkActive]="['active']" [routerLink]="['clientlist/Issue']" class="">
+									Issue certificate</a></li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['clientlist/Issued']" class="">
+									Issued certificate</a></li>
+
+						</ul>
+					</div>
+				</li>
+				<li>
+					<a href="#subNoti" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Notification</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subNoti" class="collapse ">
+						<ul class="nav">
+							<li><a [routerLinkActive]="['active']" [routerLink]="['addnotification',0]" class="">
+									Add Notification</a></li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['notificationList']" class="">
+									Notification List</a></li>
+
+						</ul>
+					</div>
+				</li>
+				<li><a [routerLinkActive]="['active']" [routerLink]="['contactus']" class=""><i
+							class="lnr lnr-code"></i> <span>Contact Us</span></a></li>
+							<li><a [routerLinkActive]="['active']" [routerLink]="['pendingorders']" class=""><i
+								class="lnr lnr-code"></i> <span>Pending Orders</span></a></li>
+	
+
+				<li><a [routerLinkActive]="['active']" [routerLink]="['addtutorial',-2]" class=""><i
+							class="lnr lnr-code"></i> <span>Introduction</span></a></li>
+
+				<li><a href="elements.html" class=""><i class="lnr lnr-code"></i> <span>Elements</span></a></li>
+				<li><a href="charts.html" class=""><i class="lnr lnr-chart-bars"></i> <span>Charts</span></a></li>
+				<li><a href="panels.html" class=""><i class="lnr lnr-cog"></i> <span>Panels</span></a></li>
+				<li><a href="notifications.html" class=""><i class="lnr lnr-alarm"></i> <span>Notifications</span></a>
+				</li>
+				<li>
+					<a href="#subPages" data-toggle="collapse" class="collapsed"><i class="lnr lnr-file-empty"></i>
+						<span>Pages</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+					<div id="subPages" class="collapse ">
+						<ul class="nav">
+							<li><a href="page-profile.html" class="">Profile</a></li>
+							<li><a href="page-login.html" class="">Login</a></li>
+							<li><a href="page-lockscreen.html" class="">Lockscreen</a></li>
+						</ul>
+					</div>
+				</li>
+				<li><a href="tables.html" class=""><i class="lnr lnr-dice"></i> <span>Tables</span></a></li>
+				<li><a href="typography.html" class=""><i class="lnr lnr-text-format"></i> <span>Typography</span></a>
+				</li>
+				<li><a href="icons.html" class=""><i class="lnr lnr-linearicons"></i> <span>Icons</span></a></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+<!-- END LEFT SIDEBAR -->

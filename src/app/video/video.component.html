@@ -1,0 +1,287 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="videodata">
+
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Search by title"
+                                    [(ngModel)]="videodata.title"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.course_id"
+                                    (change)="getSubcourseByIdOfCourse(); searchedfunctionclickedForOrder=false;">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.sub_course_id"
+                                    (change)="getTopicByIdOfCourse();searchedfunctionclickedForOrder=false;">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.topic_id"
+                                    (change)="searchedfunctionclickedForOrder=false;">
+                                    <option value="">Select Topic </option>
+                                    <option *ngFor="let obj of topiclist;" value="{{obj._id}}">
+                                        {{obj.topic_name}}</option>
+
+                                </select><br>
+                            </div>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="videodata.active_status">
+                                    <option value="">Search by Status</option>
+                                    <option value="Publish">Publish</option>
+                                    <option value="Un-Publish">Un-Publish</option>
+
+                                </select><br>
+                            </div>
+
+
+
+
+                            <br>
+
+
+                            <div class="col-md-12">
+                                <textarea class="form-control input-lg" placeholder="Search by details"
+                                    [(ngModel)]="videodata.details">
+                                </textarea>
+                                <br>
+                            </div>
+
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetvideodata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="searchaction" (click)="searchVideo('startagain')"
+                                style="margin: 10px;"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="videodataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Video List (Total
+                                {{totalRecord}} Videos)
+
+                                <i class="fa fa-refresh " (click)="searchVideo('startagain')"></i>
+
+                            </h3>
+                            <p>To set order, Select course,subcourse and topic in search form and press search button
+                            </p>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="videodataList && videodataList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+
+                                        <th>Title</th>
+                                        <th>Thumbnail<br /> <small>
+
+
+                                            Copy and paste if you have to use same image as Thumbnail,It will save
+
+                                        </small>
+                                            data</th>
+                                        <th>Status</th>
+                                        <th>Course</th>
+
+                                        <th>Topic</th>
+                                        <th>Added On</th>
+                                        <th>Files</th>
+
+                                        <th>
+                                            Order
+                                        </th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of videodataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>
+
+                                            {{obj.title}} <small  *ngIf="obj.created_by_name=='TEACHER'">(By teacher)</small></td>
+                                        <td>  <a href="{{obj.serverpath+obj.imagepath}}" target="_blank"> <img style="height: 107;width:107px" src="{{obj.serverpath+obj.imagepath}}">
+                                        </a>  <br />
+                                           
+                                           <b> {{obj.imagepath}}</b>
+                                           <br />
+                                           <input  type="text" class="form-control input-sm" placeholder="Path should be from same server"
+                                           [(ngModel)]="obj.imagepath" (blur)="updateImagePath(obj)">
+
+
+                                        </td>
+
+                                        <td>{{obj.active_status}} </td>
+
+                                        <td> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                            ({{getCourse_name(obj.course_id,'MAIN')}})
+                                        
+                                        
+                                        {{obj.sub_course_id}}</td>
+
+                                        <td>{{obj.topic_name}}</td>
+                                        <td>{{obj.adding_date | date:"medium"}}</td>
+
+
+                                        <td>
+
+                                            <span *ngIf="obj.videopath">
+                                                <a href="{{obj.serverpath+obj.videopath}}"
+                                                    target="_blank">Video</a>&nbsp;||&nbsp;
+                                            </span>
+                                            <span *ngIf="obj.pdfpath">
+                                                <a href="{{obj.serverpath+obj.pdfpath}}"
+                                                    target="_blank">PDF</a>&nbsp;||&nbsp;
+                                            </span>
+                                            <span *ngIf="obj.supportpath">
+                                                <a href="{{obj.serverpath+obj.supportpath}}" target="_blank">Supporting
+                                                    Doc</a>&nbsp;||&nbsp;
+                                            </span>
+
+                                            <a href="{{obj.serverpath+obj.imagepath}}" target="_blank">Image</a>
+
+                                        </td>
+
+                                        <td>
+                                            {{obj.order_number}}
+                                            <input
+                                                *ngIf="searchedfunctionclickedForOrder && videodata.sub_course_id && videodata.course_id && videodata.topic_id"
+                                                type="text" class="form-control input-sm" placeholder="Order"
+                                                [(ngModel)]="obj.order_number" (blur)="updateVideoorder(obj)">
+                                        </td>
+                                        <td style="cursor: pointer;">
+
+                                            <a href="../addvideo/{{obj._id}}" target="_blank">
+                                                <span class="lnr lnr-pencil"></span></a>&nbsp;<span
+                                                class="lnr lnr-trash"  (click)="deleteVideo(obj,i)"></span>
+                                            <!-- <span (click)="updateQ_in_for_query(obj)">Update Qid </span>
+                                            {{obj.question_id_join_query}} -->
+                                        </td>
+
+
+
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && videodataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="videodataList &&  videodataList.length==0">
+                                No Video Found
+                            </h4>
+                            <h4 align="center" *ngIf="!videodataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3>{{modalObjData.title}} </h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;">
+                <img *ngIf="modalObjData.imagepath!='' && modalObjData.imagepath"
+                    [src]="modalObjData.serverpath+modalObjData.imagepath">
+
+                <video width="320" height="240" controls>
+                    <source [src]="modalObjData.serverpath+modalObjData.videopath" type="video/mp4">
+                    <source [src]="modalObjData.serverpath+modalObjData.videopath" type="video/ogg">
+                    Your browser does not support the video tag.
+                </video>
+
+
+
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+
+    </div>

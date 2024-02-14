@@ -1,0 +1,151 @@
+<div class="main">
+	<!-- MAIN CONTENT -->
+	<div class="main-content">
+		<div class="container-fluid">
+
+			<div class="row">
+
+				<div class="col-md-12">
+
+					<!-- INPUT GROUPS -->
+					<div class="panel">
+						<div class="panel-heading">
+							<h3 class="panel-title"><span *ngIf="editingid==0">Add</span><span
+									*ngIf="editingid!=0">Edit</span> Course</h3>
+						</div>
+						<div class="panel-body">
+							<div class="col-md-12">
+								<div *ngIf="message!='' && message"
+									class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+									<i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+									{{message}}
+								</div>
+							</div>
+							<div class="col-md-6">
+								<select *ngIf="CommonServiceService.courseListForForm" class="form-control input-lg"
+									[(ngModel)]="upper_level_id">
+									<option value="">Select Course</option>
+
+
+									<option *ngFor="let obj of CommonServiceService.courseListForForm  ;let  i=index" value="{{obj._id}}">
+
+
+										{{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseListForForm)}}
+
+
+									</option>
+
+								</select><br>
+							</div>
+							<div class="col-md-6">
+
+								<input class="form-control input-lg " placeholder="Enter Course Name"
+									[(ngModel)]="enteringCouse" type="text">
+								<br>
+							</div>
+							<div class="col-md-6" *ngIf="upper_level_id==''">
+
+                                <input class="form-control input-lg " placeholder="Enter Icon Code"
+                                    [(ngModel)]="iconforfirstcategory" type="text">
+                                <br>
+                            </div>
+							<div class="col-md-6">
+								<div class="input-group">
+
+
+
+
+									<button type="button" class="btn btn-primary input-lg" [disabled]="saveaction"
+										(click)="saveCourse()"><span *ngIf="!saveaction"><span
+												*ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Edit</span>
+											Course</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+											<span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+												Updating...</span></span> </button>
+
+								</div>
+							</div>
+							<br>
+							<br>
+
+						</div>
+					</div>
+					<!-- END INPUT GROUPS -->
+
+				</div>
+				<div class="col-md-12">
+					<!-- TABLE HOVER -->
+					<div class="panel">
+						<div class="panel-heading">
+							<h3 class="panel-title">Course List
+								<i class="fa fa-refresh "
+									(click)="CommonServiceService.getCourseList('startagain')"></i>
+							</h3>
+						</div>
+						<div class="panel-body">
+							<table class="table table-hover"
+								*ngIf="CommonServiceService.courseList && CommonServiceService.courseList.length>0">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Course</th>
+										<th>Level</th>
+										<th>Added On</th><th>icon</th>
+										
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let obj of CommonServiceService.courseList  ;let  i=index">
+										<td> {{i+1}}</td>
+										<td> {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+										</td>
+										<td>
+											{{obj.level_number}}
+
+											<small *ngIf="obj.is_it_last_level">
+												(Last Level)
+
+											</small>
+
+
+
+										</td>
+										<td>{{obj.adding_date | date:"medium"}}
+
+
+										</td>	<td>{{obj.iconforfirstcategory}}
+
+
+										</td>
+
+										<td> <span *ngIf="obj.is_it_last_level" class="lnr lnr-pencil"
+												(click)="clickedEditButton(obj)"></span>&nbsp;<span *ngIf="obj.is_it_last_level"
+												class="lnr lnr-trash" (click)="deleteCourse(obj)"></span> </td>
+									</tr>
+
+								</tbody>
+							</table>
+							<h4 align="center"
+								*ngIf="CommonServiceService.courseList &&  CommonServiceService.courseList.length==0">
+								No Course Found
+							</h4>
+							<h4 align="center" *ngIf="!CommonServiceService.courseList ">
+
+
+
+								<i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+
+							</h4>
+						</div>
+					</div>
+					<!-- END TABLE HOVER -->
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- END MAIN CONTENT -->
+</div>
+
+
+<!-- END MAIN -->

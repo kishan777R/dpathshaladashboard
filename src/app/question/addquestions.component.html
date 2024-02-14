@@ -1,0 +1,206 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 *ngIf="editingid!=0" class="panel-title pull-right"> <a
+                                        [routerLinkActive]="['active']" [routerLink]="['../../questionlist']" class="">
+                                        << Back to questions list </a> </h3> <h3 class="panel-title">
+                                            <span *ngIf="editingid==0">Add new question</span><span
+                                                *ngIf="editingid!=0">Edit question</span>
+                                            [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="questiondata">
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Write question"
+                                    [(ngModel)]="questiondata.question" (blur)="onquestionBlur()"><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Select Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.question_type">
+                                    <option value="">Select Question Type</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Fill In The Blanks">Fill In The Blanks</option>
+                                    
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.category">
+                                    <option value="">Select Question Category</option>
+                                    <option value="Daily">For Daily Test</option>
+                                    <option value="Week">For Weekly Test</option>
+                                    <!-- <option value="Month">For Monthly Test</option> -->
+                                    <option value="Final">For Final Test</option>
+                                </select><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6  ">
+                                <input type="number" class="form-control input-lg"
+                                    [(ngModel)]="questiondata.duration_of_question"
+                                    placeholder="Question Duration in Second"><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6  ">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.mark"
+                                    placeholder="Question Weightage"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.level"
+                                    placeholder="Week Number"
+                                    *ngIf="questiondata.category!=='' && questiondata.category!=='Final'"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.day_number"
+                                    placeholder="Day Number" *ngIf="questiondata.category!=='Final' "><br>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <h4 class="panel-title" align="center">Answer Options</h4>
+                                <label class="fancy-checkbox"
+                                    *ngFor="let objOptions of questiondata.options;let i=index">
+                                    <input type="checkbox" [(ngModel)]="objOptions.status"
+                                        (click)="uncheckOtherCheckbox(objOptions,i)">
+                                    <span> <input type="text" class="form-control input-lg"
+                                            [(ngModel)]="objOptions.value" placeholder="Option {{i+1}}"></span>
+                                </label>
+
+                                <span (click)="addmoreoptions()" style="color: royalblue;cursor: pointer;"><span
+                                        style="font-size:50px">+ </span></span> <span
+                                    style="margin-left: 14px;margin-top: -10px;"> Add more options</span>
+                                <br>
+
+
+                            </div>
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <textarea class="form-control input-lg" placeholder="Write answer explaination"
+                                    [(ngModel)]="questiondata.remark">
+                                    </textarea>
+                                <br>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <textarea class="form-control input-lg" placeholder="Write audio line"
+                                    [(ngModel)]="questiondata.audio_line"  >
+                                    </textarea>
+                                <br>
+                            </div>
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction" (click)="resetquestiondata()"> Reset</button>&nbsp;
+
+
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                                (click)="saveQuestion()" style="margin: 10px;"><span *ngIf="!saveaction"><span
+                                        *ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Edit</span>
+                                    Question</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+
+                            <!-- ////////////////file //////////////// -->
+                            <div class="col-md-12">
+                            <span class="upload-btn-wrapper " style="margin-left: 3%;">
+                            <span style="color: royalblue;cursor: pointer;font-size: 50px;">+</span> Upoad Question File (csv,xls,xlsx)
+                            <br/>
+                            <small *ngIf="fileuploadAction">Wait uploading....</small>
+                                <form [formGroup]="profileForm">
+
+
+                                    <input type="file" id="fileUpload" name="profile" (change)="onSelectedFile($event)"
+                                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+
+
+                                </form>
+                            </span>
+                            <span *ngIf="fileUpload.status">
+
+
+                                <span *ngIf="fileUpload.status==='progress'">
+
+                                  
+
+                                    <div>{{fileUpload.message}}%</div>
+
+
+
+                                </span>
+
+                            </span>
+                        </div>
+                            <!-- ////////////////file end//////////////// -->
+
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!questiondata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

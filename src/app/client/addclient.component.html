@@ -1,0 +1,229 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <h3 *ngIf="editingid!=0" class="panel-title pull-right"> <a
+                                            [routerLinkActive]="['active']" [routerLink]="['../../clientlist/client']"
+                                            class="">
+                                            << Back to client list </a>
+                                    </h3>
+                                    <h3 class="panel-title">
+                                        <span *ngIf="editingid==0">Add new client</span><span *ngIf="editingid!=0">Edit
+                                            client</span>
+                                        [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="clientdata">
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter First Name"
+                                    [(ngModel)]="clientdata.first_name"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Last Name"
+                                    [(ngModel)]="clientdata.last_name"><br>
+                            </div>
+
+
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Email"
+                                    [(ngModel)]="clientdata.email"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Mobile"
+                                    [(ngModel)]="clientdata.mobile"><br>
+                            </div> <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Password"
+                                    [(ngModel)]="clientdata.password"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Alternate Mobile"
+                                    [(ngModel)]="clientdata.alternate_mobile"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="State"
+                                    [(ngModel)]="clientdata.state"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter City"
+                                    [(ngModel)]="clientdata.city"><br>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Pincode"
+                                    [(ngModel)]="clientdata.pincode"><br>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Address 1"
+                                    [(ngModel)]="clientdata.address"><br>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Enter Address 2"
+                                    [(ngModel)]="clientdata.address2"><br>
+                            </div>
+
+
+
+                            <br>
+
+
+                            <div class="col-md-12 "><br />
+                                <span (click)="addmoreCourse()" style="color: royalblue;cursor: pointer;"><span
+                                        style="font-size:50px">+ </span></span> <span> Add more course</span>
+                            </div>
+                            <span *ngFor="let objCourse of clientdata.course  ;let  coursen=index " >
+                            <div *ngIf="objCourse.action_status!=='REMOVE'"  class="col-md-12 panel panel-body">
+                              
+                                <h3>
+                                    Course Details   <i *ngIf="objCourse.order_added_by=='Admin'" class="lnr lnr-cross" title="Delete this course" style="float: right;" (click)="deleteCourse(coursen)"></i>
+
+                                </h3>
+                                <span *ngIf="objCourse.order_added_by=='Self'">
+                                    <div class="col-md-6">
+                                        <b>Course : </b> {{getCourse_name(objCourse.sub_course_id,'SUB') }}
+                                        ({{getCourse_name(objCourse.course_id,'MAIN')}})
+                                    </div>
+                                    <div class="col-md-6">
+                                        <b>Course Cost : </b> {{objCourse.course_cost }}
+                                    </div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <b>Paid Amount : </b> {{objCourse.paid_cost }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <b>Discount Amount : </b> {{objCourse.discount }}
+                                    </div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <b>Payment Recieved On : </b> {{objCourse.payment_recieved_on | date:medium }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <b>Starting Date Of Course : </b> {{objCourse.starting_date | date:medium }}
+                                    </div>
+                                    <br/>
+                                    <div class="col-md-6">
+                                        <b>Transaction Id : </b> {{objCourse.transaction_id }}
+                                    </div>
+                                    
+                                    <br/>
+
+                                   
+                                </span>
+                                <span *ngIf="objCourse.order_added_by=='Admin'">
+                                 
+
+                                    <div class="col-md-6">
+                                        <select class="form-control input-lg" [(ngModel)]="objCourse.course_id"
+                                            (change)="getSubcourseByIdOfCourse(coursen)">
+                                            <option value="">Select Course</option>
+                                            <option *ngFor="let obj of CommonServiceService.courseList;"
+                                                value="{{obj._id}}">
+                                               
+                                            
+                                                {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                            </option>
+
+                                        </select><br>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <select class="form-control input-lg" [(ngModel)]="objCourse.sub_course_id"
+                                            (change)="checkIfAlreadySelectedIfNotThenGetDurationOfCourse(coursen)">
+                                            <option value="">Select sub course</option>
+                                            <option *ngFor="let obj of objCourse.subcourseList;" value="{{obj._id}}">
+                                                {{obj.course_name}}</option>
+
+                                        </select><br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Course Cost</label>
+                                        <input type="text" class="form-control input-lg" readonly
+                                            [(ngModel)]="objCourse.course_cost"><br>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Paid Amount</label>
+                                        <input type="text" class="form-control input-lg" placeholder="Paid Amount"
+                                            [(ngModel)]="objCourse.paid_cost"><br>
+                                    </div>
+                                    <div class="col-md-6"> <label>Discount Amount</label>
+                                        <input type="text" class="form-control input-lg" placeholder="Discount Amount"
+                                            [(ngModel)]="objCourse.discount_cost"><br>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Payment Recieved On</label>
+                                        <input type="date" class="form-control input-lg"
+                                            placeholder="Payment recieved on"
+                                            [(ngModel)]="objCourse.payment_recieved_on"><br>
+                                          
+                                    </div>
+                                    <div class="col-md-6"> <label>Starting Date Of Course</label>
+                                        <input type="date" class="form-control input-lg"
+                                            placeholder="Starting Date Of Course"
+                                            [(ngModel)]="objCourse.starting_date"><br>
+                                    </div>
+                                    <div class="col-md-6"> <label>Transaction Id</label>
+                                        <input type="text" class="form-control input-lg" placeholder=" Transaction Id"
+                                            [(ngModel)]="objCourse.transaction_id"><br>
+                                    </div>
+
+
+                                    <br> <br> <br>
+
+                                </span> </div>
+                            </span>
+                           
+
+                            <br> <br>
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+
+
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                                (click)="saveclient()"><span *ngIf="!saveaction"><span
+                                        *ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Edit</span>
+                                    Client</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+                                      
+        
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!clientdata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

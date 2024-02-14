@@ -1,0 +1,752 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <!-- INPUT GROUPS -->
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><span *ngIf="editingid==0">Add</span><span
+                                    *ngIf="editingid!=0">Edit</span> Courses</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-6">
+                                <label>Select Course</label>
+                                <select class="form-control input-lg" [(ngModel)]="enteringCouse">
+                                    <option value="">Select Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+
+
+
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    </option>
+
+                                </select><br>
+                            </div>
+
+                           
+                            <div class="col-md-6">
+                                <label>Enter Sub Course Name</label>
+                                <input class="form-control input-lg " placeholder="Enter Sub Course Name"
+                                    [(ngModel)]="enteringSubCouse" type="text">
+                                <br>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Enter Sub Title</label>
+                                <input class="form-control input-lg " placeholder="Enter Sub Title"
+                                    [(ngModel)]="sub_title" type="text">
+                                <br>
+                            </div>
+
+                           
+
+                            <div class="col-md-6">
+                                <label>Position Type</label>
+                                <select class="form-control input-lg" [(ngModel)]="wheretoshowinwebsite">
+                                    <option value="">Select Position Type</option>
+                                    <option value="Trending">
+                                        Trending</option>
+                                    <option value="Popular">
+                                        Popular</option>
+                                        <option value="Best Seller">
+                                            Best Seller</option> <option value="UPCOMING">
+                                                UPCOMING</option>
+                                </select><br>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Rating</label>
+                                <input class="form-control input-lg " placeholder="Enter Rating" [(ngModel)]="rating"
+                                    type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6"> <label>Course Fee</label>
+                                <input class="form-control input-lg " placeholder="Enter Course Fee"
+                                    [(ngModel)]="amount" type="text"><br>
+                            </div>
+
+                            <div class="col-md-6"> <label>Course Previous Fee</label>
+                                <input class="form-control input-lg " placeholder="Enter Course Previous Fee"
+                                    [(ngModel)]="pre_amount" type="text"><br>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Course Duration</label>
+                                <input class="form-control input-lg " placeholder="Enter Course Duration "
+                                    [(ngModel)]="duration" type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6"><label>  Duration Type</label>
+                                <select class="form-control input-lg" [(ngModel)]="duration_type">
+                                    <option value="">Select Duration Type</option>
+                                    <option value="Month">
+                                        Month</option>
+                                    <option value="Day">
+                                        Day</option>
+                                </select><br>
+                            </div>
+
+                            <div class="col-md-6"><label>  Is It A Self Paced Course  </label>
+                                <select class="form-control input-lg" [(ngModel)]="is_self_paced">
+                                    <option value=null>Is It A Self Paced Course</option>
+                                    <option value='true'>
+                                        Yes, It Is A Self Paced Course</option>
+                                    <option value='false'>
+                                        No, It Is Not A Self Paced Course</option>
+                                </select><br>
+                            </div>
+                            <br />
+                            <div class="col-md-6">
+                                <label>  Course Code </label>
+                                <input class="form-control input-lg " placeholder="Enter Course Code "
+                                    [(ngModel)]="subjectcode" type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <label> Bonus Course  </label>
+                                <select class="form-control input-lg" [(ngModel)]="bonus_subject_id" multiple>
+                                    <option value="">Select Bonus Course  </option>
+                                    <option *ngFor="let obj of CommonServiceService.subcourseList  ; " [disabled]="obj.course_name==course_name" value="{{obj._id}}">
+                                         {{obj.course_name}}</option>
+                                    
+                                </select> 
+                                <br>
+                            </div>
+                            <div class="col-md-6"> <label> Status </label>
+                                <select class="form-control input-lg" [(ngModel)]="subjectstatus">
+                                    <option value="">Select Status</option>
+                                    <option value="TRUE">
+                                        Publish Now</option>
+                                    <option value="FALSE">
+                                        Un Publish Now</option>
+                                </select><br>
+                            </div>
+                            <div class="col-md-6" *ngIf="is_self_paced=='true'"><label> Certificate Type </label>
+                                <select class="form-control input-lg" [(ngModel)]="certificate_type">
+                                    <option value="">Select Certificate Type</option>
+                                    <option value="After_Course_Completion">After Course Completion</option>
+                                    <option value="After_Test">After Test</option>
+
+                                </select><br>
+                            </div>
+                            <div class="col-md-6" *ngIf="is_self_paced=='false'"><label> Card Arr</label>
+                                <select class="form-control input-lg" [(ngModel)]="cardArr" multiple>
+                                    <option value="">Select Card Arr</option>
+                                    <option value="practice_set"> Practice Set</option>
+                                    <option value="weekly_test"> Weekly test</option>
+                                    <option value="final_test"> Final test</option>
+                                    <option value="video"> Lecture</option>
+                                </select><br>
+                            </div>
+
+                            <div class="col-md-6 " *ngIf="is_self_paced=='true' && certificate_type=='After_Test'">
+                                <label> Card Arr</label>   <select class="form-control input-lg" [(ngModel)]="cardArr" multiple>
+                                    <option value="">Select Card Arr</option>
+
+                                    <!-- <option value="final_test"> Final test</option> -->
+                                    <option value="video"> Lecture</option>
+                                </select><br>
+                            </div>
+                            <div class="col-md-6 "
+                                *ngIf="is_self_paced=='true' && certificate_type=='After_Course_Completion'">
+                                <label> Card Arr</label>  <select class="form-control input-lg" [(ngModel)]="cardArr" multiple>
+                                    <option value="">Select Card Arr</option>
+
+
+                                    <option value="video"> Lecture</option>
+                                </select><br>
+                            </div>
+                            <div class="col-md-6 " *ngIf="is_self_paced=='false'">
+                                <label>Certificate Type</label>  <select class="form-control input-lg" [(ngModel)]="certificate_type">
+                                    <option value="">Select Certificate Type</option>
+                                    <option value="After_Test">After Test</option>
+
+
+                                </select><br>
+                            </div>
+                            <div class="col-md-6" *ngIf="editingid!=0">
+                                <label> Show Background Image</label>   <select class="form-control input-lg" [(ngModel)]="showbackground">
+                                    <option value="">Show Background Image</option>
+                                    <option value=true> Yes</option>
+                                    <option value=false> No</option>
+
+                                </select><br>
+                            </div>
+                            <div class="col-md-6">
+                                <label> Student Number</label> 
+                                <input class="form-control input-lg " placeholder="Enter Student Number "
+                                    [(ngModel)]="studentnumber" type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <label> skill level </label> 
+                                <input class="form-control input-lg " placeholder="Enter skill level   "
+                                    [(ngModel)]="skilllevel" type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <label>language </label> 
+                                <input class="form-control input-lg " placeholder="Enter language "
+                                    [(ngModel)]="language" type="text">
+                                <br>
+                            </div>
+                            <div *ngFor="let obj of describeArr  ;let  heading=index " class="col-md-12" style="border: 1px solid grey;
+                             margin-bottom: 10px;
+                             padding: 10px;">
+                                <div class="col-md-8">
+                                    <input class="form-control input-lg "
+                                        placeholder="Enter Heading {{heading+1}} Value  " [(ngModel)]="obj.headingvalue"
+                                        type="text">
+                                </div>
+                                <div class="col-md-1" *ngIf="heading>0">
+                                    <input type="checkbox" [(ngModel)]="obj.accordian">
+                                    <br /><small>Is&nbsp;Accordian</small>
+
+                                </div>
+                                <div class="col-md-1" *ngIf="heading>0 && obj.accordian==false">
+                                    <input type="checkbox" [(ngModel)]="obj.card">
+                                    <br /><small>Is&nbsp;Card</small>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control input-lg" [(ngModel)]="obj.checkbox">
+                                        <option value="">Select Checbox</option>
+                                        <option value="checkbox">
+                                            checkbox</option>
+                                        <option value="checkmark">
+                                            Checkmark</option>
+                                    </select>
+
+                                </div>
+                                <br /> <br> <br>
+                                <div *ngFor="let objPoint of obj.pointsArr ;let  point=index  " class="col-md-8">
+                                    <div class="col-md-9">
+
+
+                                        <input class="form-control input-lg "
+                                            placeholder="Enter Point {{point+1}} Value of Heading {{heading+1}}"
+                                            [(ngModel)]="objPoint.pointvalue" type="text"
+                                            (keyup)="breakintowords(objPoint,heading,point)">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="checkbox" [(ngModel)]="objPoint.ischip">
+                                        <br /><small>Is&nbsp;Chip</small>
+
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control input-lg" *ngIf="objPoint.ischip"
+                                            [(ngModel)]="objPoint.iconApply">
+                                            <option value="">Select Icon</option>
+                                            <option value="star">
+                                                Star</option>
+                                            <option value="person">
+                                                Person</option>
+                                            <option value="time">
+                                                Time</option>
+                                        </select>
+
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-md-4">
+                                    <span (click)="addmorepoints(heading)"
+                                        style="color: royalblue;cursor: pointer;"><span style="font-size:30px">+
+                                        </span></span> <span style="margin-left: 14px;margin-top: -20px;"> Add more
+                                        points</span>
+                                </div>
+                                <br> <br> <br>
+                            </div>
+                            <div class="col-md-12">
+                                <span (click)="addmoreheading()" style="color: royalblue;cursor: pointer;"><span
+                                        style="font-size:50px">+ </span></span> <span
+                                    style="margin-left: 14px;margin-top: -10px;"> Add more headings</span>
+                            </div>
+
+
+
+
+                            <!-- ////////////////file Image //////////////// -->
+                            <div class="col-md-12"> <br> <br> <br> <br>
+                                <div class="col-md-3"> Upoad Home Page Image (png,jpeg)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img">
+
+
+                                        <input type="file" id="fileUpload_img" name="profile_img"
+                                            (change)="onSelectedFile_img($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img.status">
+
+
+                                    <span *ngIf="fileUpload_img.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file image end//////////////// -->
+
+
+
+
+                            <!-- ////////////////file course Image //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad Purchased Image (png,jpeg)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img_y">
+
+
+                                        <input type="file" id="fileUpload_img_y" name="profile_img_y"
+                                            (change)="onSelectedFile_img_y($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img_y">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img_y.status">
+
+
+                                    <span *ngIf="fileUpload_img_y.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img_y.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file course image end//////////////// -->
+                            <!-- ////////////////file back ground Image //////////////// -->
+                            <div class="col-md-12" *ngIf="course_int>0">
+                                <div class="col-md-3"> Upoad background File (png,jpeg)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img_b">
+
+
+                                        <input type="file" id="fileUpload_img_b" name="profile_img_b"
+                                            (change)="onSelectedFile_img_b($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img_b">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img_b.status">
+
+
+                                    <span *ngIf="fileUpload_img_b.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img_b.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file  back ground  image end//////////////// -->
+                            <!-- ////////////////file thumbnail Image //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad Thumbnail Image (png,jpeg)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img_th">
+
+
+                                        <input type="file" id="fileUpload_img_th" name="profile_img_th"
+                                            (change)="onSelectedFile_img_th($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img_th">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img_th.status">
+
+
+                                    <span *ngIf="fileUpload_img_th.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img_th.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file  thumbnail  image end//////////////// -->
+
+
+                            <!-- ////////////////file Demo video //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad Demo Video (mp3)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img_th_v">
+
+
+                                        <input type="file" id="fileUpload_img_th_v" name="profile_img_th_v"
+                                            (change)="onSelectedFile_img_th_v($event)" accept="video/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img_th_v">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img_th_v.status">
+
+
+                                    <span *ngIf="fileUpload_img_th_v.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img_th_v.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file  demo video    end//////////////// -->
+
+
+
+                            <div class="col-md-12">
+                                <h3>Teacher Section</h3>
+                                </div>
+
+                           
+                            <div class="col-md-6">
+                                <label>Instructor Name </label> 
+                                <input class="form-control input-lg " placeholder="Enter Instructor Name"
+                                    [(ngModel)]="instructor" type="text">
+                                <br>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Instructor Occupation </label> 
+                                <input class="form-control input-lg " placeholder="Enter Instructor Occupation "
+                                    [(ngModel)]="teacher_occupation" type="text">
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Instructor Email </label> 
+                                <input class="form-control input-lg " placeholder="Enter  Instructor Email Id "
+                                    [(ngModel)]="teacher_email" type="text">
+                                <br>
+                            </div>
+
+                            <div class="col-md-12">  <label>Instructor about </label> 
+                                <textarea class="form-control input-lg " placeholder="Enter Instructor about "
+                                    [(ngModel)]="teacher_about">
+
+</textarea>
+
+                                <br>
+                            </div>
+                            <!-- ////////////////file teacher Image //////////////// -->
+                            <div class="col-md-12">
+                                <div class="col-md-3"> Upoad Teacher Image (png,jpeg)</div>
+
+                                <div class="col-md-3">
+                                    <form [formGroup]="profileForm_img_teacher">
+
+
+                                        <input type="file" id="fileUpload_img_teacher" name="profile_img_teacher"
+                                            (change)="onSelectedFile_img_teacher($event)" accept="image/*" />
+
+
+                                    </form>
+                                </div>
+
+
+
+                                <br />
+                                <small *ngIf="fileuploadAction_img_teacher">Wait uploading....</small>
+
+
+                                <span *ngIf="fileUpload_img_teacher.status">
+
+
+                                    <span *ngIf="fileUpload_img_teacher.status==='progress'">
+
+
+
+                                        <div>{{fileUpload_img_teacher.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                                <br />
+                            </div>
+                            <!-- ////////////////file  teacher  image end//////////////// -->
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div> <br>
+                            &nbsp;<button type="button" style="padding: 10px;"
+                                class="btn btn-danger input-lg pull-right" (click)="searchform=false;backtoempty()">Hide
+                                Form
+
+                            </button>&nbsp;<button id="datadiv" type="button"
+                                class="btn btn-primary input-lg pull-right" [disabled]="saveaction || fileaction"
+                                (click)="saveCourse()">
+                                <span *ngIf="!saveaction"><span *ngIf="editingid==0">Save</span>
+                                    <span *ngIf="editingid!=0">Edit</span>
+                                    Sub Course</span>
+
+
+                                <span *ngIf="saveaction">
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span>
+                                    <span *ngIf="editingid!=0">
+                                        Updating...</span>
+                                </span>
+                            </button>&nbsp;
+
+                            <br>
+
+                        </div>
+                    </div>
+                    <!-- END INPUT GROUPS -->
+
+                </div>
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> Courses List&nbsp;&nbsp;<i class="fa fa-refresh "
+                                    (click)="CommonServiceService.getCourseList('startagain');CommonServiceService.getSubCourseList('startagain');"></i>
+
+                                <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                    (click)="searchform=true;scrollToDataDiv();backtoempty()">&nbsp;&nbsp;&nbsp;+ Add
+                                    Course
+                                    &nbsp;&nbsp;&nbsp;</button>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover"
+                                *ngIf="CommonServiceService.subcourseList && CommonServiceService.subcourseList.length>0">
+                                <thead>
+                                    <tr>  <th>Action</th>
+                                        <th>#</th>
+                                        <th>Category</th>
+                                        <th> Course</th>
+                                        <th>Instructor</th>
+                                        <th>Rating</th>
+
+                                        <th> Course Fee</th>
+                                        <th>Course Duration</th>
+                                        <th>Added On</th>
+                                        <th>Status</th>
+                                        <th>Image</th>
+                                        <th>Account Image</th>
+                                        <th>Background Image</th>
+                                        <th>Demo video</th>
+                                      
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let obj of CommonServiceService.subcourseList  ;let  i=index">
+                                        <td> <span class="lnr lnr-pencil"
+                                            (click)="clickedEditButton(obj);searchform=true;scrollToDataDiv()"></span>&nbsp;<span
+                                            class="lnr lnr-trash" (click)="deleteCourse(obj)"></span> </td>   <td> {{i+1}}</td>
+                                        <td>{{obj.main_course_name}} </td>
+                                        <td style="cursor: pointer;color: darkslategrey;"
+                                            (click)="openModal(obj,myModal)">
+                                             
+                                            <br />
+                                            {{obj. course_name}}<small
+                                                *ngIf="obj.created_by_name=='TEACHER'"><br />Course By
+                                                teacher<br /></small>
+
+                                            ({{obj.subjectcode}})
+
+                                          
+
+                                            <br />
+                                            <b>Certificate Type :</b> {{obj.certificate_type}}
+                                        </td>
+                                        <td> {{obj. instructor}}
+
+                                            <br />
+                                            Email: {{obj.teacher_email}}<br />Occupation:
+                                            {{obj.teacher_occupation}}<br />
+
+                                            <a href="{{obj.serverpath+obj.teacherimagepath}}" target="_blank">
+
+                                                <img src="{{obj.serverpath+obj.teacherimagepath}}"
+                                                    style="height: 40px;width:40px;">
+                                            </a>
+
+                                        </td>
+                                        <td> {{obj. rating}}</td>
+                                        <td> &#8377; {{obj. amount}}</td>
+                                        <td> {{obj. duration}} {{obj. duration_type}}
+
+                                            <br />
+                                            <b *ngIf="obj.is_self_paced">Self Paced</b>
+                                        </td>
+                                        <td>{{obj.adding_date | date:"medium"}}</td>
+                                        <td>{{obj.subjectstatus}}</td>
+                                        <td>
+
+                                            <a href="{{obj.serverpath+obj.imagepath}}" target="_blank">
+
+                                                <img src="{{obj.serverpath+obj.imagepath}}"
+                                                    style="height: 40px;width:40px;">
+                                            </a>
+
+                                        </td>
+                                        <td>
+
+                                            <a href="{{obj.serverpath+obj.yourcourse_imagepath}}" target="_blank">
+
+                                                <img src="{{obj.serverpath+obj.yourcourse_imagepath}}"
+                                                    style="height: 40px;width:40px;">
+                                            </a>
+
+                                        </td>
+                                        <td>
+                                            ({{obj.course_int}})
+                                            <a href="{{obj.serverpath+obj.backgroundimagepath}}" target="_blank">
+
+                                                <img src="{{obj.serverpath+obj.backgroundimagepath}}"
+                                                    style="height: 40px;width:40px;">
+                                            </a>
+
+                                        </td>
+                                        <td>
+                                            <span class="lnr lnr-trash" *ngIf="obj.thumbnailpath">
+                                                <a href="{{obj.serverpath+obj.demovideopath}}" target="_blank">
+
+                                                    <img src="{{obj.serverpath+obj.thumbnailpath}}"
+                                                        style="height: 40px;width:40px;">
+                                                </a>
+
+                                                <span class="lnr lnr-trash"
+                                                    (click)="removeDemoVideo(obj)"></span></span>
+
+                                        </td>
+                                        
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <h4 align="center"
+                                *ngIf="CommonServiceService.subcourseList &&  CommonServiceService.subcourseList.length==0">
+                                No Sub Course Found
+                            </h4>
+                            <h4 align="center" *ngIf="!CommonServiceService.subcourseList ">
+
+
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3>{{modalObjData. course_name}} (
+                {{modalObjData.main_course_name}}) </h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;">
+                <div *ngFor="let obj of modalObjData.describeArr  ;let  heading=index " class="col-md-12">
+                    <h4 *ngIf=" obj.headingvalue!=''"> {{heading+1}}. {{ obj.headingvalue }} </h4>
+                    <h4 *ngIf=" obj.headingvalue==''"> NA </h4>
+                    <div *ngFor="let objPoint of obj.pointsArr ;let  point=index  " class="col-md-8">
+                        <span *ngIf=" objPoint.pointvalue!=''"> {{point+1}}. {{ objPoint.pointvalue }} </span> <br />
+                    </div>
+
+                    <br>
+                </div>
+
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<!-- END MAIN -->

@@ -1,0 +1,43 @@
+
+
+<div   *ngIf="CommonServiceService.isLoginedF()">
+    <app-dashboard></app-dashboard>
+</div>
+
+<div   *ngIf="!CommonServiceService.isLoginedF()">
+    <br/><br/><br/><br/><div class="vertical-align-wrap">
+        <div class="vertical-align-middle">
+            <div class="auth-box ">
+                <div class="left">
+                    <div class="content">
+                        <div class="header">
+                            <div class="logo text-center"><img src="http://dpathshala.live/logo.png"  style="height: 60px;"  alt="DPAHSHALA Logo"></div>
+                            <p class="lead">Login to your account</p>
+                        </div>
+                        <form class="form-auth-small" >
+                            <div class="form-group">
+                                <label for="signin-email" class="control-label sr-only">Email</label>
+                                <input type="email" class="form-control" [(ngModel)]="x.email" [ngModelOptions]="{standalone: true}"  placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label for="signin-password" class="control-label sr-only">Password</label>
+                                <input type="password" class="form-control" [(ngModel)]="x.password"  [ngModelOptions]="{standalone: true}" placeholder="Password">
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary btn-lg btn-block" (click)="loginme()">LOGIN</button>
+                           
+                        </form>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="overlay"></div>
+                    <div class="content text">
+                        <h1 class="heading">DPathshala Admin Portal</h1>
+                        
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+  </div>

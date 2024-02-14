@@ -1,0 +1,314 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="questiondata">
+
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Search by question"
+                                    [(ngModel)]="questiondata.question"><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.course_id" (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Search by Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                               
+                                    
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.category">
+                                    <option value="">Search by Question Category</option>
+                                    <option value="Daily">For Daily Test</option>
+                                    <option value="Week">For Weekly Test</option>
+                                    <!-- <option value="Month">For Monthly Test</option> -->
+                                    <option value="Final">For Final Test</option>
+                                </select><br>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.question_type">
+                                    <option value="">Select Question Type</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Fill In The Blanks">Fill In The Blanks</option>
+                                    
+                                </select><br>
+                            </div>
+
+                            
+
+                            <br>
+                                
+                            <div class="col-md-6  ">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="questiondata.duration_of_question"
+                                    placeholder="Search by Question duration "
+                                     ><br>
+                            </div>
+                            <br>
+                                
+                                <div class="col-md-6  ">
+                                    <input type="text" class="form-control input-lg" [(ngModel)]="questiondata.mark"
+                                        placeholder="Search by Question Weightage"
+                                         ><br>
+                                </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="questiondata.level"
+                                    placeholder="Week Number"
+                                    *ngIf="questiondata.category!=='' && questiondata.category!=='Final'"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="questiondata.day_number"
+                                    placeholder="Day Number"
+                                    *ngIf="questiondata.category!=='Final' "><br>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <textarea   class="form-control input-lg" placeholder="Search by answer explaination"
+                                    [(ngModel)]="questiondata.remark">
+                                </textarea>
+                                    <br>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <textarea   class="form-control input-lg" placeholder="Search by audio line"
+                                    [(ngModel)]="questiondata.audio_line">
+                                </textarea>
+                                    <br>
+                            </div>
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                            [disabled]="searchaction" (click)="resetquestiondata()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" class="btn btn-primary pull-right input-lg"  [disabled]="searchaction"
+                                (click)="searchQuestion('startagain')" style="margin: 10px;"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="questiondataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "  
+                            (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Questions List (Total
+                                {{totalRecord}} Questions)
+                            
+                                <i class="fa fa-refresh " (click)="searchQuestion('startagain')"></i>
+                            
+                            </h3>
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+                            
+                            <table class="table table-hover"
+                                *ngIf="questiondataList && questiondataList.length>0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Question</th>
+                                        <th>Options&nbsp;&&nbsp;Answer</th>
+                                        <th>Audio Line </th>
+                                      
+                                        <th>Course</th>
+                                        <th>category</th>
+
+                                        <th>Added On</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of questiondataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td style="cursor: pointer;color: darkslategrey;" (click)="openModal(obj,myModal)">
+                                             <b >{{obj.question}} </b>
+                                             <br/>  <span *ngIf="obj.mark">(marks- {{obj.mark}})</span><br/>
+                                            <span *ngIf="obj.duration_of_question">(duration- {{obj.duration_of_question}} Sec)
+                                               
+                                        </span>
+                                        <br/>
+                                        (Questions type -  {{obj.question_type}})<br/>
+                                    </td><td> 
+                                        <span
+                                        *ngFor="let objOptions of obj.options ;let  io=index ">
+                                        <span *ngIf="objOptions.value!='' ">
+                                            {{io+1}}.
+                            
+                                            <b *ngIf="objOptions.status" style="color: seagreen;">
+                                                {{objOptions.value}}
+                                            </b>
+                            
+                                            <span *ngIf="!objOptions.status">
+                                                {{objOptions.value}}
+                                            </span>
+                                            <br />
+                                        </span>
+                                    </span>
+                                </td><td> 
+                                    <span *ngIf="obj.remark">
+                                   
+                                        <h4>Answer Explanation</h4>
+                                        {{obj.remark}}
+                            
+                                    </span>
+                                    <span *ngIf="obj.audio_line">
+                                       
+                                        <h4>Audio Line</h4>
+                                        {{obj.audio_line}}
+                            
+                                    </span>  
+                                    </td>
+                                       
+                                        <td>{{obj.sub_course_name}} ({{obj.course_name}})</td>
+                                        <td>{{obj.category}} <br /><span
+                                            *ngIf="obj.day_number!='0'">({{obj.day_number}}&nbsp;Day)</span>
+                                            <br /><span
+                                                *ngIf="obj.level!='0'">({{obj.level}}&nbsp;Week)</span> </td>
+                                        <td>{{obj.adding_date | date:"medium"}}</td>
+                                        <td style="cursor: pointer;"> 
+
+
+                                            <a href="../addquestion/{{obj._id}}" target="_blank"  >
+                                                <span  class="lnr lnr-pencil"  ></span> 
+
+
+                                            </a> &nbsp;<span
+                                                class="lnr lnr-trash" (click)="deleteQuestion(obj,i)"></span> 
+                                            <!-- <span (click)="updateQ_in_for_query(obj)">Update Qid </span>
+                                            {{obj.question_id_join_query}} -->
+                                            </td>
+                                    </tr>
+                                   <tr>
+                                       <td>
+                                            <div class="search-results"
+                                            infinite-scroll
+                                            [infiniteScrollDistance]="scrollDistance"
+                                            [infiniteScrollUpDistance]="scrollUpDistance"
+                                            [infiniteScrollThrottle]="throttle"
+                                            (scrolled)="onScrollDown()"
+                                            (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin" *ngIf="infinescrollerstatus && questiondataList.length<totalRecord" style="font-size:  large;"></i>
+                                       </td>
+                                   </tr>
+
+                                </tbody>
+                            </table>
+                            
+                            <h4 align="center"
+                                *ngIf="questiondataList &&  questiondataList.length==0">
+                                No Question Found
+                            </h4>
+                            <h4 align="center" *ngIf="!questiondataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal  (blur)="closemodal(myModal)">
+
+	<!-- Modal content -->
+	<div class="modal-content">
+	  <div class="modal-header">
+		<span class="close" (click)="closemodal(myModal)">&times;</span>
+		<h3>{{modalObjData.question}}<span *ngIf="modalObjData.mark">(marks-
+            {{modalObjData.mark}})</span><span *ngIf="modalObjData.duration_of_question">(duration-
+                {{modalObjData.duration_of_question}} sec)</span>  </h3>
+	  </div>
+	  <div class="modal-body">
+        <div class="panel-body" style="overflow-x:auto;">
+            <h4>Question Type - {{modalObjData.question_type}}</h4>
+            <h4>Options </h4>
+            <span
+            *ngFor="let objOptions of modalObjData.options ;let  io=index ">
+            <span *ngIf="objOptions.value!='' ">
+                {{io+1}}.
+
+                <b *ngIf="objOptions.status" style="color: seagreen;">
+                    {{objOptions.value}}
+                </b>
+
+                <span *ngIf="!objOptions.status">
+                    {{objOptions.value}}
+                </span>
+                <br />
+            </span>
+        </span>
+
+        <span *ngIf="modalObjData.remark">
+            <hr>
+            <h4>Answer Explanation</h4>
+            {{modalObjData.remark}}
+
+        </span>
+        <span *ngIf="modalObjData.audio_line">
+            <hr>
+            <h4>Audio Line</h4>
+            {{modalObjData.audio_line}}
+
+        </span>    
+        <button type="button" class="btn btn-danger pull-right input-md"  
+        (click)="closemodal(myModal)"> Close</button>&nbsp;
+
+	  </div>
+	  
+	</div>
+  
+  </div>

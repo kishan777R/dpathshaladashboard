@@ -1,0 +1,313 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="coursedata">
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control input-lg" placeholder="Search by Course Name"
+                                    [(ngModel)]="coursedata.course_name"><br>
+                            </div>
+
+
+
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="coursedata.created_by">
+                                    <option value="">Select Teacher</option>
+
+                                    <option *ngFor="let tob of teacherdataList ;let  i=index"
+                                        value="{{tob.table_id_for_query}}">{{tob.first_name}} {{tob.last_name}}
+                                    </option>
+
+                                </select><br>
+                            </div>
+
+                            <br>
+                            <div class="col-md-6">
+
+                                <label>From Course Adding Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="coursedata.from_reg_date"
+                                    placeholder="Search by From Reg date"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>To Course Adding Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="coursedata.to_reg_date"
+                                    placeholder="Search by To Reg date"><br>
+                            </div>
+                            <br>
+
+
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetcoursedatajust()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" style="margin: 10px;"
+                                class="btn btn-primary pull-right input-lg" [disabled]="searchaction"
+                                (click)="searchcourse('startagain')"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="coursedataList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">
+
+                                Course List <span *ngIf="coursestatus=='pendingforapproval'">
+                                    Which Are Pending For Approval
+                                </span>
+                                <span *ngIf="coursestatus=='approved'">
+                                    Which Are Approved
+                                </span>
+
+                                <span *ngIf="coursestatus=='pendingforpublish'">
+                                    Which Are Pending For Publish
+                                </span>
+                                <span *ngIf="coursestatus=='published'">
+                                    Which Are Published
+                                </span>
+                                <span *ngIf="coursestatus=='rejected'">
+                                    Which Are Rejected
+                                </span>
+
+
+                                (Total
+                                {{totalRecord}} courses)
+
+                                <i class="fa fa-refresh " (click)="searchcourse('startagain')"></i>
+                            </h3>
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover" *ngIf="coursedataList && coursedataList.length>0 ">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Course Details</th>
+                                        <th>Approval Status</th>
+                                        <th>Publish Status</th>
+                                        <th>Teacher</th>
+
+
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let objcourse of coursedataList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>
+                                            <b>Course: </b>
+                                            {{ objcourse.course_name }} <small>({{CommonServiceService.getCoursenameAccordingToLevel_byParent_id(objcourse.parent_course,CommonServiceService.courseList)}})</small>
+                                            <br />
+
+
+
+                                            <b>Duration: </b> {{objcourse.duration}}
+                                            {{objcourse.duration_type}}<br />
+
+                                            <b *ngIf="objcourse.is_self_paced">Self Paced</b> <br />
+
+                                            <b>Course Fee: </b> {{objcourse.amount}} <br />
+
+
+                                            <b>Course Added On:
+                                            </b>{{objcourse.adding_date | date:'medium'}}<br />
+
+                                            <span style="cursor: pointer;color: blue;"
+                                                (click)="openModal(objcourse,myModal)">
+                                                Click for more details
+                                            </span><br />
+                                        </td>
+
+                                        <td>
+                                            <span *ngIf="objcourse.course_review_status=='PENDING'"
+                                                style="color: grey;">Under Review
+                                                <br />
+
+                                                <button type="button" class="btn btn-success  input-sm"
+                                                    (click)="approvecourse(objcourse)"> Approve</button>&nbsp;
+
+                                                <button type="button" class="btn btn-danger   input-sm"
+                                                    (click)="rejectCorse(objcourse)"> Reject</button>&nbsp;
+
+                                            </span>
+                                            <span *ngIf="objcourse.course_review_status=='APPROVED'"
+                                                style="color: green;">Approved
+                                                <br />
+                                                <button *ngIf="objcourse.course_publish_status!=='PUBLISHED'"
+                                                    type="button" class="btn btn-danger   input-sm"
+                                                    (click)="rejectCorse(objcourse)"> Reject</button>&nbsp;
+                                                    <button *ngIf="objcourse.course_publish_status!=='PUBLISHED'"
+                                                    type="button" class="btn btn-primary   input-sm"
+                                                    (click)="pendingCorse(objcourse)"> Pending</button>&nbsp;
+
+
+                                            </span>
+                                            <span *ngIf="objcourse.course_review_status=='REJECTED'"
+                                                style="color: red;">Rejected
+                                                <br />
+                                                <small *ngIf="objcourse.rejection_reason!=''">
+                                                    (Reason - {{objcourse.rejection_reason}})
+                                                </small>
+                                              
+
+                                                <br />
+                                                <button type="button" class="btn btn-success  input-sm"
+                                                    (click)="approvecourse(objcourse)"> Approve</button>&nbsp;
+                                                    <button  type="button" class="btn btn-primary   input-sm"
+                                                    (click)="pendingCorse(objcourse)"> Pending</button>&nbsp;
+                                            </span>
+
+
+                                        </td>
+                                        <td>
+
+
+
+
+
+                                            <b *ngIf="objcourse.course_publish_status=='PENDING'">Not requested
+                                                to publish</b>
+                                            <b *ngIf="objcourse.course_publish_status=='SUBMITTED'">Requested to
+                                                Publish
+                                                <span *ngIf="objcourse.course_review_status!=='APPROVED'"
+                                                    style="color: grey;">
+                                                    <br />
+                                                    Course status is not approved, so we can not publish it
+
+
+
+
+                                                </span>
+                                                <span *ngIf="objcourse.course_review_status=='APPROVED'"
+                                                    style="color: grey;">
+                                                    <br />
+                                                    <button type="button" class="btn btn-success  input-sm"
+                                                        (click)="publish(objcourse)"> Publish</button>&nbsp;
+
+
+
+
+                                                </span>
+
+
+
+                                            </b>
+                                            <b *ngIf="objcourse.course_publish_status=='PUBLISHED'">Published</b>
+
+
+
+
+                                        </td>
+                                        <td>
+                                            {{getTeachername(objcourse.created_by)}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && coursedataList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="coursedataList &&  coursedataList.length==0">
+                                No Course Found
+                            </h4>
+                            <h4 align="center" *ngIf="!coursedataList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+
+<div id="myModal" class="modal" [hidden]="!modalObjData" #myModal (blur)="closemodal(myModal)">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" (click)="closemodal(myModal)">&times;</span>
+            <h3>{{modalObjData. course_name}} </h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel-body" style="overflow-x:auto;max-height:400px;overflow-y: scroll;">
+                Showing original size of image<br />
+                <a href="{{modalObjData.serverpath}}{{modalObjData.imagepath}} " target="_blank">
+                    <img src="{{modalObjData.serverpath}}{{modalObjData.imagepath}}">
+                </a>
+                <br />
+                <h3>
+                    Descriptions
+                </h3>
+                <div *ngFor="let obj of modalObjData.describeArr  ;let  heading=index " class="col-md-12">
+                    <h4 *ngIf=" obj.headingvalue!=''"> {{ obj.headingvalue }} </h4>
+                    <!-- <h4 *ngIf=" obj.headingvalue==''"> NA </h4> -->
+                    <div *ngFor="let objPoint of obj.pointsArr ;let  point=index  " class="col-md-8">
+                        <span *ngIf=" objPoint.pointvalue!=''"> {{ objPoint.pointvalue }}<br /> </span>
+                    </div>
+
+                    <br>
+                </div>
+
+
+                <button type="button" class="btn btn-danger pull-right input-md" (click)="closemodal(myModal)">
+                    Close</button>&nbsp;
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

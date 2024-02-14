@@ -1,0 +1,102 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 *ngIf="editingid!=0" class="panel-title pull-right"> <a
+                                        [routerLinkActive]="['active']" [routerLink]="['../../topicList']" class="">
+                                        << Back to topic list </a>
+                                </h3>
+                                <h3 class="panel-title">
+                                    <span *ngIf="editingid==0">Add new topic</span><span *ngIf="editingid!=0">Edit
+                                        Topic</span>
+                                    [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="topicdata">
+                            
+                            <div class="col-md-12">
+                                <input type="text" class="form-control input-lg" placeholder="Write Topic name"
+                                    [(ngModel)]="topicdata.topic_name" ><br>
+                            </div>
+
+                            <br>
+
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="topicdata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Select Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                       
+                                      
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    
+                                    
+                                    </option>
+
+                                </select><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <select class="form-control input-lg" [(ngModel)]="topicdata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select><br>
+                            </div>
+
+ 
+
+
+ 
+                            <br>
+
+                       
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction || fileaction" (click)="resettopicdata()"> Reset</button>&nbsp;
+ 
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction || fileaction"
+                                (click)="saveTopic()" style="margin: 10px;"><span *ngIf="!saveaction"><span
+                                        *ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Edit</span>
+                                    Topic</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!topicdata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

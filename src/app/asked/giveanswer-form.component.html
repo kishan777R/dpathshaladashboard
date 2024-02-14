@@ -1,0 +1,202 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title">
+                                    Answer this question
+                                    [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="askeddata">
+
+
+
+                            <angular-editor id="editorMain" [placeholder]="'Enter text here...'"
+                                [(ngModel)]="askeddata.answer"></angular-editor>
+                            <br> <br> <br>
+                            <div class="col-md-12" *ngIf="askeddata.filePath!='' && askeddata.filePath">
+
+                                <a href="{{askeddata.serverpath+askeddata.filePath}}" target="_blank">
+                                    <h5>Supportive [{{askeddata.filetype}}] File is uploaded</h5>
+                                </a>
+                            </div>
+                            <div class="col-md-12" *ngIf="askeddata.filePath=='' || !askeddata.filePath">
+                                <h5>No any Supportive File is uploaded</h5>
+                            </div>
+                            <div class="col-md-12">
+                                <h4>Asked Question : {{questionasked}}</h4>
+                                <h4>Reference :</h4>
+                                <span
+                                    *ngIf="obj.module=='Examdetail' || obj.module=='Exam' || obj.module=='Tutorial'  ">
+
+                                    <span *ngIf="obj.weekOrday=='Daily'">
+                                        Practice Set
+                                    </span>
+                                    <span *ngIf="obj.weekOrday=='Weekly'">
+                                        Week Test
+                                    </span>
+                                    <span *ngIf="obj.weekOrday=='Final'">
+                                        Final Test
+                                    </span>
+                                    <span *ngIf="obj.weekOrday=='Monthly'">
+                                        Monthly Test
+                                    </span>
+                                    <br />
+                                    <span *ngIf="obj.module=='Examdetail' || obj.module=='Exam' ">
+                                        <b> Question: </b> {{obj.question}}
+                                    </span>
+
+                                    <span *ngIf="  obj.module=='Tutorial'">
+                                        <b> Tutorial Topic: </b> {{obj.tutorial}}
+                                    </span>
+
+
+
+                                    <br />
+                                    <b> Exam Date: </b> {{obj.exam_date | date:'mediumDate'}}
+                                    <br />
+                                    <b>Course:</b> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                    ({{getCourse_name(obj.course_id,'MAIN')}})
+
+
+                                </span>
+
+                                <span *ngIf="obj.module=='Video'  ">
+                                    <b> Tutorial Topic: </b> {{obj.video}}
+                                    <br />
+                                    <b>Course:</b> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                    ({{getCourse_name(obj.course_id,'MAIN')}})
+
+
+                                </span>
+                            </div>
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction" (click)="resetaskeddata()"> Reset</button>&nbsp;
+
+
+                            <button type="button" class="btn btn-primary pull-right input-lg"
+                                [disabled]="saveaction || fileuploadAction" (click)="giveanswer()"
+                                style="margin: 10px;"><span *ngIf="!saveaction"><span
+                                        *ngIf="editingid==0">Save</span><span *ngIf="editingid!=0">Update</span>
+                                    Answer</span> <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+
+                            <!-- ////////////////file //////////////// -->
+                            <div class="col-md-12">
+                                <span class="upload-btn-wrapper " style="margin-left: 3%;">
+                                    <span style="color: royalblue;cursor: pointer;font-size: 50px;">+</span> Upoad
+                                    Support File
+                                    <br />
+                                    <small *ngIf="fileuploadAction">Wait uploading....</small>
+                                    <form [formGroup]="profileForm">
+
+
+                                        <input type="file" id="fileUpload" name="profile"
+                                            (change)="onSelectedFile($event)" />
+
+
+                                    </form>
+                                </span>
+                                <span *ngIf="fileUpload.status">
+
+
+                                    <span *ngIf="fileUpload.status==='progress'">
+
+
+
+                                        <div>{{fileUpload.message}}%</div>
+
+
+
+                                    </span>
+
+                                </span>
+                            </div>
+                            <!-- ////////////////file end//////////////// -->
+
+
+
+                        </div>
+                        <h4 align="center" *ngIf="!askeddata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+                    <div class="panel" *ngIf="chatdata && chatdata.length>0">
+                        <br />
+                        <h2 align="center">Chat Message</h2>
+                        <div style="max-height: 400px;overflow-y: scroll;margin-left: 10px;margin-right: 10px;">
+                            <span *ngFor="let cobj of chatdata">
+
+
+
+                                <div class="panel" style="margin-bottom:10px;padding:10px;float: left;
+                              width: 80%;
+                              height: auto;
+                              border-radius: 0px;
+                              border-color: white;
+                              border: 1px solid #f4f5f8;color: steelblue;" *ngIf="cobj.by=='user'">
+
+                                    <span [innerHTML]="cobj.message" style="font-size: 17px;">
+
+                                    </span> <br /><br />
+                                    <small style="opacity: 7px;">
+                                        {{cobj.date | date:"medium"}}
+                                    </small>
+
+                                </div>
+                                <div class="panel" style="margin-bottom:10px;padding:10px;float: right;
+                              width: 80%;
+                              color: white;
+                              height: auto;
+                              border-radius: 0px;background-color: steelblue;" *ngIf="cobj.by!='user'">
+
+                                    <span [innerHTML]="cobj.message" style="font-size: 17px;">
+
+                                    </span>
+                                    <br /> <br />
+                                    <small style="opacity: 7px;">
+                                        {{cobj.date | date:"medium"}}
+                                    </small>
+                                    <span class="lnr lnr-trash" style="float: right;"
+                                        (click)="deletemessageofchat(cobj)"></span>
+                                </div>
+                                <br /><br />
+                            </span>
+                        </div>
+                        <br />
+                        <br />
+                        <textarea class="form-control input-lg" [(ngModel)]="chatanswer"
+                            placeholder="Your message"></textarea>
+                        <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                            (click)="savechat()" style="margin: 10px;"> Send message</button>
+                        <br /><br /><br />
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

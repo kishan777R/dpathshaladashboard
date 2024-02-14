@@ -1,0 +1,208 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12" [hidden]="!searchform">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 class="panel-title pull-left"> Search Form </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="askedQdata">
+
+                            <div class="col-md-12">
+
+                                <input list="browsers" id="clientsearched" type="text" class="form-control input-lg"
+                                    placeholder="Search by client" (change)="onSortChange($event)">
+                                <datalist id="browsers">
+                                    <option *ngFor="let obj of clientdataList;"
+                                        value="{{obj.first_name}} {{obj.last_name}} ({{obj.customer_id}})">
+
+                                </datalist>
+
+
+                                <br>
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <label>From Date</label>
+                                <input type="date" class="form-control input-lg"
+                                    [(ngModel)]="askedQdata.from_asked_date"
+                                    placeholder="Search by From asked date"><br>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <label>To Date</label>
+                                <input type="date" class="form-control input-lg" [(ngModel)]="askedQdata.to_asked_date"
+                                    placeholder="Search by To asked date"><br>
+                            </div>
+
+
+
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="searchaction" (click)="resetaskedQdatajust()"> Reset</button>&nbsp;
+
+                            <button id="datadiv" type="button" style="margin: 10px;"
+                                class="btn btn-primary pull-right input-lg" [disabled]="searchaction"
+                                (click)="searchaskedQ('startagain')"><span *ngIf="!searchaction"> Search
+                                </span> <span *ngIf="searchaction"><i class="fa fa-spinner fa-spin"></i>
+                                    Searching..</span> </button>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-12">
+                    <!-- TABLE HOVER -->
+                    <div class="panel">
+                        <div class="panel-heading" *ngIf="askedQuestionList ">
+                            <button type="button" style="color: black;" class="btn btn-warning pull-right input-md "
+                                (click)="searchform=!searchform">&nbsp;&nbsp;&nbsp;Search
+                                Form&nbsp;&nbsp;&nbsp;</button>
+                            <h3 class="panel-title">Asked Question List (Total
+                                {{totalRecord}} asked)
+
+                                <i class="fa fa-refresh " (click)="searchaskedQ('startagain')"></i>
+                            </h3>
+
+                        </div>
+                        <div class="panel-body" style="overflow-x:auto;">
+
+                            <table class="table table-hover"
+                                *ngIf="askedQuestionList && askedQuestionList.length>0 && courses_subcourse_both_list">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Client Details</th>
+
+                                        <th>Asked Question</th>
+                                        <th>Answer</th>
+                                        <th>Reference</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+                                    <tr *ngFor="let obj of askedQuestionList ;let  i=index">
+                                        <td> {{i+1}}</td>
+                                        <td>{{getClientname(obj.c_id_int)}}
+
+
+                                        </td>
+                                        <td> {{obj.asked_question}}
+                                        </td>
+                                        <td [innerHTML]="obj.answer">
+
+                                        </td>
+                                        <td>
+                                            <span
+                                                *ngIf="obj.module=='Examdetail' || obj.module=='Exam' || obj.module=='Tutorial'  ">
+
+                                                <span *ngIf="obj.weekOrday=='Daily'">
+                                                    Practice Set
+                                                </span>
+                                                <span *ngIf="obj.weekOrday=='Weekly'">
+                                                    Week Test
+                                                </span>
+                                                <span *ngIf="obj.weekOrday=='Final'">
+                                                    Final Test
+                                                </span>
+                                                <span *ngIf="obj.weekOrday=='Monthly'">
+                                                    Monthly Test
+                                                </span>
+                                                <br />
+                                                <span *ngIf="obj.module=='Examdetail' || obj.module=='Exam' ">
+                                                    <b> Question: </b> {{obj.question}}
+                                                </span>
+
+                                                <span *ngIf="  obj.module=='Tutorial'">
+                                                    <b> Tutorial Topic: </b> {{obj.tutorial}}
+                                                </span>
+
+
+
+                                                <br />
+                                                <b> Exam Date: </b> {{obj.exam_date | date:'mediumDate'}}
+                                                <br />
+                                                <b>Course:</b> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                                ({{getCourse_name(obj.course_id,'MAIN')}})
+
+
+                                            </span>
+
+                                            <span *ngIf="obj.module=='Video'  ">
+                                                <b> Tutorial Topic: </b> {{obj.video}}
+                                                <br />
+                                                <b>Course:</b> {{getCourse_name(obj.sub_course_id,'SUB') }}
+                                                ({{getCourse_name(obj.course_id,'MAIN')}})
+
+
+                                            </span>
+                                        </td>
+
+
+
+
+
+                                        <td style="cursor: pointer;">
+                                            <a href="../../askedquestionlist_form/{{obj._id}}" target="_blank">
+
+                                                Give
+                                                Answer</a>
+
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="search-results" infinite-scroll
+                                                [infiniteScrollDistance]="scrollDistance"
+                                                [infiniteScrollUpDistance]="scrollUpDistance"
+                                                [infiniteScrollThrottle]="throttle" (scrolled)="onScrollDown()"
+                                                (scrolledUp)="onUp()"></div>
+                                            <i class="fa fa-spinner fa-spin"
+                                                *ngIf="infinescrollerstatus && askedQuestionList.length<totalRecord"
+                                                style="font-size:  large;"></i>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <h4 align="center" *ngIf="askedQuestionList &&  askedQuestionList.length==0">
+                                No askedQ Found
+                            </h4>
+                            <h4 align="center" *ngIf="!askedQuestionList ">
+
+                                <i class="fa fa-spinner fa-spin" style="font-size: xx-large;"></i>
+                            </h4>
+                        </div>
+                    </div>
+                    <!-- END TABLE HOVER -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->

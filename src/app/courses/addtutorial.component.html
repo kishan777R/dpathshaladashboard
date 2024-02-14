@@ -1,0 +1,595 @@
+<div class="main">
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <div class="panel" id="datadiv">
+                        <div class="panel-heading">
+                            <div class="col-md-12">
+                                <h3 *ngIf="editingid!=0 && functioningonwhat!='introduction'"
+                                    class="panel-title pull-right"> <a [routerLinkActive]="['active']"
+                                        [routerLink]="['../../tutoriallist']" class="">
+                                        << Back to tutorial list </a>
+                                </h3>
+                                <h3 class="panel-title">
+                                    <span *ngIf="editingid==0">Add new tutorial</span>
+                                    <span *ngIf="editingid==-2">Add Introduction</span>
+
+                                    <span *ngIf="editingid!=0 && functioningonwhat!='introduction'">Edit tutorial</span>
+                                    [All fields are mendatory(<span style="color: red;">*</span>)] </h3>
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="questiondata">
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                                (click)="saveTutorial()" style="margin: 10px;"><span *ngIf="!saveaction">
+                                    <span *ngIf="editingid==0">Save</span>
+                                    <span *ngIf="editingid!=0">Edit</span>
+
+                                    <span *ngIf="editingid!=-2"> Tutorial</span> <span *ngIf="editingid==-2">
+                                        Introduction</span>
+                                </span>
+                                <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+
+
+                            <br>
+
+                            <div class="col-md-4" *ngIf="  functioningonwhat!='introduction'">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.course_id"
+                                    (change)="getSubcourseByIdOfCourse()">
+                                    <option value="">Select Course</option>
+                                    <option *ngFor="let obj of CommonServiceService.courseList;" value="{{obj._id}}">
+                                       
+                                        {{CommonServiceService.getCoursenameAccordingToLevel(obj,CommonServiceService.courseList)}}
+                                    
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="col-md-4" *ngIf="  functioningonwhat!='introduction'">
+                                <select class="form-control input-lg" [(ngModel)]="questiondata.sub_course_id">
+                                    <option value="">Select sub course</option>
+                                    <option *ngFor="let obj of subcourseList;" value="{{obj._id}}">
+                                        {{obj.course_name}}</option>
+
+                                </select>
+                            </div>
+
+
+
+
+
+                            <div class="col-md-4  " *ngIf="  functioningonwhat!='introduction'">
+                                <input type="number" class="form-control input-lg" [(ngModel)]="questiondata.day_number"
+                                    placeholder="Day number (excluding test date)"><br>
+                            </div>
+
+
+                            <div class="col-md-4  " *ngIf="  functioningonwhat!='introduction'">
+                                <input type="text" class="form-control input-lg" [(ngModel)]="questiondata.topic"
+                                    placeholder="Topic"><br>
+                            </div>
+
+
+                            <br>
+                            <div class="col-md-12 panel panel-body"  style="box-shadow:0 2px 6px rgba(0, 0, 0, 0.56)">
+                                <h4 align="left">
+                                    Add Files To Screen
+                                </h4><br />
+                                <div class="col-md-2">
+                                    <select class="form-control input-lg" [(ngModel)]="screennumber">
+                                        <option value="">Select Screen</option>
+                                        <option *ngFor="let objScreen of questiondata.describeArr  ;let  screen=index "
+                                            value="{{screen}}">
+                                            Screen {{screen+1}}</option>
+
+
+                                    </select><br>
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-control input-lg" [(ngModel)]="uploadingwhat">
+                                        <option value="">Select File Type</option>
+                                        <option value="pdf">
+                                            PDF</option>
+                                        <option value="video">
+                                            Video</option>
+                                        <option value="audio">
+                                            Audio</option>
+                                        <option value="image">
+                                            Image <small>(same size will be displayed)</small></option>
+
+                                    </select>
+                                </div>
+                                <div class="col-md-2" *ngIf="uploadingwhat=='video'"> <select
+                                        class="form-control input-lg" [(ngModel)]="videoclass">
+                                        <option value="">Select video type</option>
+                                        <option value="portrait">
+                                            PORTRAIT</option>
+                                        <option value="landscape">
+                                            LANDSCAPE</option>
+
+
+
+                                    </select>
+                                    <br>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-lg" placeholder="PDF Title"
+                                        [(ngModel)]="pdfname" *ngIf="uploadingwhat=='pdf'">
+                                    <input type="text" class="form-control input-lg" placeholder="Video Title"
+                                        [(ngModel)]="videoname" *ngIf="uploadingwhat=='video'"> <input type="text"
+                                        class="form-control input-lg" placeholder="Audio Title" [(ngModel)]="audioname"
+                                        *ngIf="uploadingwhat=='audio'"> <input type="text" class="form-control input-lg"
+                                        placeholder="Image Title" [(ngModel)]="imagename"
+                                        *ngIf="uploadingwhat=='image'"> <br>
+
+
+
+
+                                </div>
+                                <div class="col-md-2" *ngIf="uploadingwhat=='video'">
+
+
+
+                                    <form [formGroup]="profileForm_img_thumb">
+
+                                        Upload Thumbnail:
+                                        <input type="file" id="fileUpload_img_thumb" name="profile_img_thumb"
+                                            (change)="onSelectedFile_img_thumb($event)" accept="image/*" />
+
+
+
+
+                                    </form>
+                                    <br />
+                                    <small *ngIf="fileuploadAction_img_thumb">Wait uploading....</small>
+
+
+                                    <span *ngIf="fileUpload_img_thumb.status">
+
+
+                                        <span *ngIf="fileUpload_img_thumb.status==='progress'">
+
+
+
+                                            <div>{{fileUpload_img_thumb.message}}%</div>
+
+
+
+                                        </span>
+
+                                    </span>
+                                    <br />
+
+                                </div>
+                                <div class="col-md-2">
+                                    <form [formGroup]="profileForm_img">
+                                        <span *ngIf="uploadingwhat">
+                                            <span
+                                                *ngIf="uploadingwhat=='video' && questiondata.describeArr[screennumber][0].videothumbnailpath">
+                                                Upload {{uploadingwhat}}:
+                                            </span>
+                                            <span *ngIf="uploadingwhat!=='video' ">
+                                                Upload {{uploadingwhat}}:
+                                            </span>
+                                        </span>
+
+                                        <input type="file" id="fileUpload_img" *ngIf="uploadingwhat=='image'"
+                                            name="profile_img" (change)="onSelectedFile_img($event)" accept="image/*" />
+                                        <input type="file" id="fileUpload_img"
+                                            *ngIf="uploadingwhat=='video' && questiondata.describeArr[screennumber][0].videothumbnailpath"
+                                            name="profile_img" (change)="onSelectedFile_img($event)" accept="video/*" />
+                                        <input type="file" id="fileUpload_img" *ngIf="uploadingwhat=='audio'"
+                                            name="profile_img" (change)="onSelectedFile_img($event)" accept="audio/*" />
+                                        <input type="file" id="fileUpload_img" *ngIf="uploadingwhat=='pdf'"
+                                            name="profile_img" (change)="onSelectedFile_img($event)" />
+
+
+
+                                    </form>
+                                    <br />
+                                    <small *ngIf="fileuploadAction_img">Wait uploading....</small>
+
+
+                                    <span *ngIf="fileUpload_img.status">
+
+
+                                        <span *ngIf="fileUpload_img.status==='progress'">
+
+
+
+                                            <div>{{fileUpload_img.message}}%</div>
+
+
+
+                                        </span>
+
+                                    </span>
+                                    <br />
+
+
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" *ngIf="isfileEditing"
+                                        class="btn btn-primary pull-right input-sm" (click)="saveEdting()"
+                                        style="margin: 10px;"> Update </button>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 ">
+
+
+                                <div class="col-md-4 "><br />
+                                    <span (click)="addmoreScreen('top');scrollToDataDiv('top')" id="top"  style="color: royalblue;cursor: pointer;"><span
+                                            style="font-size:40px">+ </span></span> <span> Add more screen at top</span>
+                                </div>
+                                <div class="col-md-4 "><br />
+                                    <span (click)="addmoreScreen('last');scrollToDataDiv('last')"   
+                                        style="color: royalblue;cursor: pointer;"><span style="font-size:40px">+
+                                        </span></span> <span> Add more screen at last</span>
+                                </div>
+
+
+                            </div>
+
+                            <div *ngFor="let objScreen of questiondata.describeArr  ;let  screen=index "
+                                class="col-md-12 panel panel-body" style="box-shadow:0 2px 6px rgba(0, 0, 0, 0.56)">
+                                <i class="fa fa-close" style="cursor:pointer;float: right;"
+                                    (click)="removeScreen(screen)"></i>
+                                <h2 align="center">
+                                    Screen {{screen+1}}
+
+                                </h2>
+
+                                <div id="filepanel{{screen}}" class="col-md-12 panel panel-body"
+                                    style="box-shadow:0 2px 6px rgba(0, 0, 0, 0.56)">
+                                    <h3>
+                                        Screen {{screen+1}} Informations
+                                    </h3><br/>
+                                    <div class="col-md-3">
+                                        Is Speaker Required ? <input type="checkbox"
+                                            [(ngModel)]="objScreen[0].do_need_to_speek_by_system">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        Screen Position
+                                        <select class="form-control input-sm"
+                                            [(ngModel)]="objScreen[0].screen_position">
+                                            <option value="Before">
+                                                Before Questions</option>
+                                            <option value="After"> After Questions</option>
+
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3" *ngIf="objScreen[0].screen_position=='After'">
+                                        Is It A Normal Flow Screen ? <input type="checkbox"
+                                            [(ngModel)]="objScreen[0].is_it_normal_flow_screen">
+                                    </div>
+                                    <div class="col-md-3"
+                                        *ngIf="objScreen[0].is_it_normal_flow_screen==false && objScreen[0].screen_position=='After'">
+                                        Screen Type
+                                        <select class="form-control input-sm"
+                                            [(ngModel)]="objScreen[0].what_type_of_screen_if_not_normal_flow">
+                                            <option value="Passage">Passage</option>
+                                            <option value="Vocablury"> Vocablury</option>
+                                            <option value="Notes"> Notes</option>
+
+                                        </select>
+                                        <span  *ngIf="objScreen[0].what_type_of_screen_if_not_normal_flow=='Vocablury' || objScreen[0].what_type_of_screen_if_not_normal_flow=='Passage' ">
+                                            <small>
+                                                Max Marks Of {{objScreen[0].what_type_of_screen_if_not_normal_flow}}
+                                            </small>
+                                            
+                                            <input type="text" class="form-control input-sm" 
+                                               
+                                                [(ngModel)]="objScreen[0].max_mark">
+                                        </span>
+                                       
+
+                                    </div>
+                                    <div class="col-md-12">
+                                        <small>
+                                            <br /> <br />
+
+                                            <b> Is Speaker Required ? -</b> Check this if you want that our system read
+                                            whatever you enter in screen content.If it is unchecked then a text-editor
+                                            wll be available for you but system could not read that.
+                                            <br />
+                                            <b> Is It A Normal Flow Screen ? -</b> Check this if screen is not
+                                            PASSAGE,VOCABLURY and NOTES (ASSIGNMENT)
+                                            <br />
+                                            <b> Screen Position -</b> Self Explanatory
+                                        </small>
+
+                                    </div>
+                                </div>
+                                <div  class="col-md-12 panel panel-body"
+                                    style="box-shadow:0 2px 6px rgba(0, 0, 0, 0.56)">
+                                    <h3 >
+                                        Screen {{screen+1}} Files <small style="cursor: pointer;color: blue;" (click)="scrollToDataDiv('datadiv')"><i class="fa fa-arrow-up"></i> Go to file section</small>
+                                    </h3><br/>
+                                    <div class="col-md-12" *ngIf="objScreen[0].pdfpath">
+                                        <i class="fa fa-close" style="cursor:pointer;float: right;"
+                                            (click)="removeFile('pdf',screen)"></i>
+                                        <i class="fa fa-pencil" style="padding-right:10px;cursor:pointer;float: right;"
+                                            (click)="editFile('pdf',screen)"></i>
+                                        <div class="col-md-1">
+
+                                            <b><a href="{{objScreen[0].pdfserver}}{{objScreen[0].pdfpath}}"
+                                                    style="font-size: 16px;" target="_blank">PDF :
+                                                </a>   <br/>
+                                                <span style="cursor: pointer;color:red" (click)="CommonServiceService.deletefilefromserver(objScreen[0].pdfserver,objScreen[0].pdfpath)">
+                                                    Delete File From Server
+
+                                                </span>
+
+
+                                            </b>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control input-lg" placeholder="PDF Title"
+                                                [(ngModel)]="objScreen[0].pdfname">
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-md-12" *ngIf="objScreen[0].imagepath">
+                                        <i class="fa fa-close" style="cursor:pointer;float:right;"
+                                            (click)="removeFile('image',screen)"></i>
+                                        <i class="fa fa-pencil" style="padding-right:10px;cursor:pointer;float: right;"
+                                            (click)="editFile('image',screen)"></i>
+                                        <div class="col-md-1">
+                                            <a href="{{objScreen[0].imageserver}}{{objScreen[0].imagepath}}"
+                                                style="font-size:16px;" target="_blank">Image :
+                                            </a>
+                                            <br/>
+                                            <span style="cursor: pointer;color:red" (click)="CommonServiceService.deletefilefromserver(objScreen[0].imageserver,objScreen[0].imagepath)">
+                                                Delete File From Server
+
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control input-lg" placeholder="Image Title"
+                                                [(ngModel)]="objScreen[0].imagename">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" *ngIf="objScreen[0].videopath">
+                                        <i class="fa fa-close" style="cursor:pointer;float:right;"
+                                            (click)="removeFile('video',screen)"></i>
+                                        <i class="fa fa-pencil" style="padding-right:10px;cursor:pointer;float: right;"
+                                            (click)="editFile('video',screen)"></i>
+                                        <div class="col-md-1">
+                                            <a href="{{objScreen[0].videoserver}}{{objScreen[0].videopath}}"
+                                                style="font-size:16px;" target="_blank">Video :
+                                            </a>   <br/>
+                                            <span style="cursor: pointer;color:red" (click)="CommonServiceService.deletefilefromserver(objScreen[0].videoserver,objScreen[0].videopath)">
+                                                Delete File From Server
+
+                                            </span>
+
+
+
+                                        </div>
+                                        <div class="col-md-2">
+                                            <select class="form-control input-lg" [(ngModel)]="objScreen[0].videoclass">
+                                                <option value="">Select video type</option>
+                                                <option value="portrait">
+                                                    PORTRAIT</option>
+                                                <option value="landscape">
+                                                    LANDSCAPE</option>
+
+
+
+                                            </select>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input type="text" class="form-control input-lg" placeholder="Video Title"
+                                                [(ngModel)]="objScreen[0].videoname">
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <img src="{{objScreen[0].videothumbnailserver}}{{objScreen[0].videothumbnailpath}}"
+                                                style="width: 50px;height:50px;">
+                                                <br/>
+                                                <span style="cursor: pointer;color:red" (click)="CommonServiceService.deletefilefromserver(objScreen[0].videothumbnailserver,objScreen[0].videothumbnailpath)">
+                                                    Delete File From Server
+
+                                                </span>
+
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="col-md-12" *ngIf="objScreen[0].audiopath">
+                                        <i class="fa fa-close" style="cursor:pointer;float:right;"
+                                            (click)="removeFile('audio',screen)"></i>
+                                        <i class="fa fa-pencil" style="padding-right:10px;cursor:pointer;float: right;"
+                                            (click)="editFile('audio',screen)"></i>
+                                        <div class="col-md-1">
+                                            <a href="{{objScreen[0].audioserver}}{{objScreen[0].audiopath}} "
+                                                style="font-size: 16px;" target="_blank">Audio :
+                                            </a>   <br/>
+                                            <span style="cursor: pointer;color:red" (click)="CommonServiceService.deletefilefromserver(objScreen[0].audioserver,objScreen[0].audiopath)">
+                                                Delete File From Server
+
+                                            </span>
+                                        </div>
+                                        <div class="col-md-3"> <input type="text" class="form-control input-lg"
+                                                placeholder="Audio Title" [(ngModel)]="objScreen[0].audioname"></div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12 panel panel-body"
+                                    style="box-shadow:0 2px 6px rgba(0, 0, 0, 0.56)">
+                                    <h3>
+                                        Screen {{screen+1}} Content
+                                    </h3>
+                                    <div *ngFor="let obj of objScreen  ;let  heading=index " class="col-md-12">
+
+                                        <br />
+
+                                        <div class="col-md-10">
+                                            <input class="form-control input-lg "
+                                                placeholder="Enter Heading {{heading+1}} Value  of Screen {{screen+1}} "
+                                                [(ngModel)]="obj.headingvalue" type="text"><br>
+                                        </div>
+
+                                        <div *ngIf="objScreen[0].do_need_to_speek_by_system" class="col-md-2">
+                                            <select class="form-control input-lg"
+                                                [(ngModel)]="obj.headingvalue_language">
+                                                <option value="">Select Language</option>
+                                                <option value="english">
+                                                    English</option>
+                                                <option value="hindi">
+                                                    Hindi</option>
+
+                                            </select><br>
+                                        </div>
+
+
+                                        <br />
+                                        <div *ngIf="!objScreen[0].do_need_to_speek_by_system" style="padding: 30px;">
+                                            <angular-editor id="editorMain" [placeholder]="'Enter text here...'"
+                                                [(ngModel)]="objScreen[0].content_when_we_do_not_need_speeker">
+                                            </angular-editor>
+                                        </div>
+                                        <span *ngIf="objScreen[0].do_need_to_speek_by_system">
+                                            <div *ngFor="let objPoint of obj.pointsArr ;let  point=index  "
+                                                class="col-md-10" style="padding-bottom: 15px;">
+                                                <div class="col-md-1">
+                                                    <input type="checkbox" [(ngModel)]="objPoint.is_example">
+                                                    <br /><small>Is&nbsp;Ex.</small>
+
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <input class="form-control input-lg "
+                                                        placeholder="Enter Point {{point+1}} Value of Heading {{heading+1}} of Screen {{screen+1}}"
+                                                        [(ngModel)]="objPoint.pointvalue" type="text"
+                                                        (keyup)="breakintowords(objPoint,screen,heading,point)">
+
+                                                    <span (click)="addmorepoint_after_this_line(screen,heading,point)"
+                                                        style="color: royalblue;cursor: pointer;"><span
+                                                            style="font-size:20px">+
+                                                        </span></span> <span
+                                                        style="margin-left: 14px;margin-top: -20px;">
+                                                        Add
+                                                        point after this</span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select class="form-control input-lg"
+                                                        [(ngModel)]="objPoint.pointvalue_language">
+                                                        <option value="">Select Language</option>
+                                                        <option value="english">
+                                                            English</option>
+                                                        <option value="hindi">
+                                                            Hindi</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select class="form-control input-lg" *ngIf="objPoint.is_example"
+                                                        [(ngModel)]="objPoint.colored_word_array" multiple>
+                                                        <option value="">Select Colored Word</option>
+                                                        <option *ngFor="let objofword of objPoint.word_array;"
+                                                            value="{{objofword.perword}}">
+                                                            {{objofword.perword}}
+                                                        </option>
+
+                                                    </select>
+                                                </div>
+
+
+                                                <br /> <br>
+                                            </div>
+                                            <span (click)="addmorepoints(screen,heading)"
+                                                style="color: royalblue;cursor: pointer;"><span style="font-size:30px">+
+                                                </span></span> <span style="margin-left: 14px;margin-top: -20px;"> Add
+                                                more
+                                                points</span>
+                                        </span>
+
+                                        <br> <br> <br>
+                                    </div>
+                                    <span *ngIf="objScreen[0].do_need_to_speek_by_system"> <span
+                                            (click)="addmoreheading(screen)"
+                                            style="color: royalblue;cursor: pointer;"><span style="font-size:50px">+
+                                            </span></span> <span style="margin-left: 14px;margin-top: -10px;"> Add more
+                                            headings</span></span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-12 ">
+
+
+                                <div class="col-md-4 "><br />
+                                    <span (click)="addmoreScreen('top');scrollToDataDiv('top')" id="top"  style="color: royalblue;cursor: pointer;"><span
+                                            style="font-size:40px">+ </span></span> <span> Add more screen at top</span>
+                                </div>
+                                <div class="col-md-4 "><br />
+                                    <span (click)="addmoreScreen('last');scrollToDataDiv('last')" id="last"  
+                                        style="color: royalblue;cursor: pointer;"><span style="font-size:40px">+
+                                        </span></span> <span> Add more screen at last</span>
+                                </div>
+
+
+                            </div>
+                            <br> <br>
+                            <div class="col-md-12">
+                                <div *ngIf="message!='' && message"
+                                    class="alert alert-{{messageClass}} alert-dismissible" role="alert">
+                                    <i class="fa fa-{{messageClassIcon}}"></i>&nbsp;&nbsp;
+                                    {{message}}
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger pull-right input-lg" style="margin: 10px;"
+                                [disabled]="saveaction" (click)="resetquestiondata()"> Reset</button>&nbsp;
+
+
+                            <button type="button" class="btn btn-primary pull-right input-lg" [disabled]="saveaction"
+                                (click)="saveTutorial()" style="margin: 10px;"><span *ngIf="!saveaction">
+                                    <span *ngIf="editingid==0">Save</span>
+                                    <span *ngIf="editingid!=0">Edit</span>
+
+                                    <span *ngIf="editingid!=-2"> Tutorial</span> <span *ngIf="editingid==-2">
+                                        Introduction</span>
+                                </span>
+                                <span *ngIf="saveaction"><i class="fa fa-spinner fa-spin"></i>
+                                    <span *ngIf="editingid==0"> Saving...</span><span *ngIf="editingid!=0">
+                                        Updating...</span></span> </button>
+
+                        </div>
+                        <h4 align="center" *ngIf="!questiondata">
+
+                            <i style="font-size: xx-large;" class="fa fa-spinner fa-spin"></i>
+                        </h4>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
